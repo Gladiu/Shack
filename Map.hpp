@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.hpp"
 #include "Room.hpp"
+#include "Corridor.hpp"
 #include <memory>
 #include <vector>
 
@@ -14,6 +15,7 @@ class Map : public sf::Drawable{
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
 
         std::vector<Room> Rooms;
+        std::vector<Corridor> Corridors;
         sf::Texture floor_texture;
         sf::Texture wall_texture;
 };

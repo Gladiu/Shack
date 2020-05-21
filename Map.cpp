@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Map.hpp"
 #include "Tile.hpp"
+#include "Corridor.hpp"
 #include <vector>
 #include <iostream>
 #include <memory>
@@ -21,27 +22,28 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
 
 void Map::Generate(){
     //generating rooms
-    int ammount_of_rooms = 8;
-    for(int i =0;i<ammount_of_rooms;i++){
+    int ammount_of_rooms = 2;
+    bool repeat_alghoritm = true;
+    sf::Vector2f newexit,oldexit,position;
+    position = sf::Vector2f(0.0,0.0);
+    int position_of_corridor = 0;
+    for(int i = 0; i<=ammount_of_rooms; i++){
         Room room;
-        room.Generate(&floor_texture);
+        Corridor corridor;
         if(i>0){
-            //basically fixing overlaping rooms for new room created
-            bool repeat_alghoritm = true;
-            while(repeat_alghoritm){
-                repeat_alghoritm = false;
-                for(auto it:Rooms){
-                    if(room.Collision_Check(it)){
-                        std::cout<<"passed the if in map.cpp"<<std::endl;
-                        room.Overlap_Fix(it);
-                        repeat_alghoritm = true;
-                    }
-                }
-            }
+
+            
+            corridor.GenerateCorridor(Rooms[i-1].GetExitPoint(),newposition);
+          //  room.AddExit(last_exit);
+            this->Corridors.emplace_back(corridor);
         }
+        room.Generate(newexit,&floor_texture,position_of_corridor);
+        if(i==0)
+            oldexit = room.GenerateLeftExit();
         this->Rooms.push_back(room);
     }
-    //generating coridors
+
+
 }
 
 sf::Vector2f Map::Get_Spawn(){

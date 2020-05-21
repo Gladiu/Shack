@@ -9,13 +9,7 @@ Tile::Tile(){
 
 }
 
-void Tile::Generate(int input,sf::Texture *input_texture){
-    this->type = static_cast<Tile_Type>(input);
-/*    switch(type){
-        case floor:
-            this->texture.loadFromFile("textures/floor.png");
-            break;
-    }*/
+void Tile::Generate(sf::Texture *input_texture){
     input_texture->setRepeated(true);
     sprite.setTexture(*input_texture);
     sprite.scale(Globals::SCALE,Globals::SCALE);
@@ -31,4 +25,13 @@ void  Tile::setPos(float x,float y){
 
 void Tile::Move(const sf::Vector2f &offset){
     sprite.move(offset);
+}
+sf::Vector2f Tile::GetPosition(){
+   return sprite.getPosition();
+}
+sf::Vector2f Tile::GetSize(){
+    sf::Vector2f size;
+    size.x = sprite.getGlobalBounds().width;
+    size.y  = sprite.getGlobalBounds().height;
+    return size;
 }
