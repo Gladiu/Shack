@@ -44,3 +44,36 @@ void Corridor::SetNextLevelTrigger(bool trigger){
     this->next_level_trigger = trigger;
 }
 
+bool Corridor::WillCollide(int direction, int lenght,const sf::Vector2f position){
+    bool colliding = false;
+    sf::Vector2f temp_position = position;
+    int temp_adding = 0;
+    for(auto it : Tiles){
+        temp_position = position;
+        sf::Vector2f tile_position = it.GetPosition();
+        if(colliding)
+            break;
+        while(!colliding && temp_adding <lenght){
+            switch(direction){
+                case 0:
+                    temp_position.y -= Globals::SCALE*16;
+                    break;
+                case 1:
+                    temp_position.x -= Globals::SCALE*16;
+                    break;
+                case 2:
+                    temp_position.y += Globals::SCALE*16;
+                    break;
+                case 3:
+                    temp_position.x += Globals::SCALE*16;
+                    break;
+            }
+            if(((temp_position.x >= tile_position.x && tile_position.x+Globals::SCALE*16 >= temp_position.x)
+                || (temp_position.x <= tile_position.x && tile_position.x <= temp_position.x+Globals::SCALE*16))
+                &&((temp_position.y >= tile_position.y && tile_position.y+Globals::SCALE*16 >= temp_position.y)
+                || (temp_position.y <= tile_position.y && tile_position.y <= temp_position.y+Globals::SCALE*16)))
+                colliding = true;
+        }
+    }
+    return colliding;
+}

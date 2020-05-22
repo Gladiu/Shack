@@ -150,7 +150,7 @@ void Room::Emplace_Back_Connected_Room_Number(int number){
 }
 
 sf::Vector2f Room::GetValidExit(sf::Vector2f position_of_exit){
-    //you are passing an exit position!!
+    //you are passing an enternance position!!
     //top left right down are bound to how sfml renderwindow sees coordinates
     bool down,top,left,right = false;//bool that says where is the current exit that we dont want to mess
     //finding in which direction to go
@@ -235,4 +235,66 @@ sf::Vector2f Room::GenerateLeftExit(){
     buffer.y = top_left_pos.y;
     this->ExitPos.emplace_back(buffer);
     return buffer;
+}
+int Room::GetDirectionOfExit(){
+    //copy pasta of code from previous function lolololololol
+    sf::Vector2f position_of_exit = this->GetExitPoint();
+    int buffer;
+    for(auto it:Tiles){
+        if(position_of_exit.x + Globals::SCALE*16 == it.GetPosition().x){
+            buffer = 3;
+            break;
+        }
+        if(position_of_exit.x - Globals::SCALE*16 == it.GetPosition().x){
+            buffer = 1;
+            break;
+        }
+        if(position_of_exit.y + Globals::SCALE*16 == it.GetPosition().y){
+           buffer = 0;
+           break;
+       }
+        if(position_of_exit.y - Globals::SCALE*16 == it.GetPosition().y){
+            buffer = 2;
+            break;
+        }
+    }
+return buffer;
+}
+
+bool Room::WillCollide(int direction, int lenght,const sf::Vector2f position){
+    bool colliding = false;
+    sf::Vector2f temp_position = position;
+    int temp_adding = 0;
+    for(auto it : Tiles){
+        temp_position = position;
+        sf::Vector2f tile_position = it.GetPosition();
+        if(colliding)
+            break;
+        while(!colliding && temp_adding <lenght){
+            switch(direction){
+                case 0:
+                    temp_position.y -= Globals::SCALE*16;
+                    break;
+                case 1:
+                    temp_position.x -= Globals::SCALE*16;
+                    break;
+                case 2:
+                    temp_position.y += Globals::SCALE*16;
+                    break;
+                case 3:
+                    temp_position.x += Globals::SCALE*16;
+                    break;
+            }
+            if(((temp_position.x >= tile_position.x && tile_position.x+Globals::SCALE*16 >= temp_position.x)
+                || (temp_position.x <= tile_position.x && tile_position.x <= temp_position.x+Globals::SCALE*16))
+                &&((temp_position.y >= tile_position.y && tile_position.y+Globals::SCALE*16 >= temp_position.y)
+                || (temp_position.y <= tile_position.y && tile_position.y <= temp_position.y+Globals::SCALE*16)))
+                colliding = true;
+        }
+    }
+    return colliding;
+}
+
+void Room::ReplaceExit(sf::Vector2f newexit){
+    this->ExitPos[1] = newexit;
 }

@@ -18,6 +18,9 @@ class Room : public sf::Drawable{
         sf::Vector2f GetExitPoint();
         void Emplace_Back_Connected_Room_Number(int number);
         sf::Vector2f GenerateLeftExit();
+        int GetDirectionOfExit();
+        bool WillCollide(int direction, int lenght,const sf::Vector2f position);
+        void ReplaceExit(sf::Vector2f newexit);
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
     private:

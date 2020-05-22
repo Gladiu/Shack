@@ -9,6 +9,7 @@ class Corridor : public sf::Drawable{
         void GiveTexture(sf::Texture *input_texture);
         void GenerateCorridor(sf::Vector2f departurepos,sf::Vector2f finalpos);
         void SetNextLevelTrigger(bool trigger);
+        bool WillCollide(int direction, int lenght,const sf::Vector2f position);
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
     private:

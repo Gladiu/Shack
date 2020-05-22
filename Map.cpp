@@ -4,6 +4,7 @@
 #include "Map.hpp"
 #include "Tile.hpp"
 #include "Corridor.hpp"
+#include "Globals.hpp"
 #include <vector>
 #include <iostream>
 #include <memory>
@@ -22,28 +23,71 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
 
 void Map::Generate(){
     //generating rooms
+    //basically its generating rooms, then corridor from it then next room etc
     int ammount_of_rooms = 2;
     bool repeat_alghoritm = true;
-    sf::Vector2f newexit,oldexit,position;
+    sf::Vector2f start,end,position;
     position = sf::Vector2f(0.0,0.0);
     int position_of_corridor = 0;
     for(int i = 0; i<=ammount_of_rooms; i++){
         Room room;
         Corridor corridor;
         if(i>0){
+            start = Rooms[i-1].GetValidExit(end);
+            int direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();            
+            int lenght = (std::rand()%10+4)*Globals::SCALE*16;
+            bool colliding = false;
+            while(!colliding){
+                for(auto it : Rooms){
+                    colliding = it.WillCollide(direction_of_next_corridor,lenght,start);
+                    if(colliding)
+                        break;
+                }
+                for(auto it : Corridors){
+                    colliding = it.WillCollide(direction_of_next_corridor,lenght,start);
+                    if(colliding)
+                        break;
+                }
+                if(colliding){
+                    start = Rooms[i-1].GetValidExit(start);
+                    direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();
+                    lenght = (std::rand()%10+4)*Globals::SCALE*16;
+                }
+            }
+            Rooms[i-1].AddExit(start);
+                bool generating = true;
+                while(generating){
+                    switch(direction_of_next_corridor){
+                        case 0:
+                            end.y -= Globals::SCALE*16;
+                            if(end.y == start.y - lenght)
+                                generating = false;
+                            break;
+                        case 1:
+                            end.x -= Globals::SCALE*16;
+                            if(end.x == start.x - lenght)
+                                generating = false;
+                            break;
+                        case 2:
+                            end.y += Globals::SCALE*16;
+                            if(end.y == start.y + lenght)
+                                generating = false;
+                            break;
+                        case 3:
+                            end.x += Globals::SCALE*16;
+                            if(end.x == start.x + lenght)
+                                generating = false;
+                            break;
+                    }
+                }
 
-            
-            corridor.GenerateCorridor(Rooms[i-1].GetExitPoint(),newposition);
-          //  room.AddExit(last_exit);
-            this->Corridors.emplace_back(corridor);
+            corridor.GenerateCorridor(start,end);
         }
-        room.Generate(newexit,&floor_texture,position_of_corridor);
-        if(i==0)
-            oldexit = room.GenerateLeftExit();
+        //define place_room_here
+        room.Generate(place_room_here,&floor_texture,position_of_corridor);
+        this->Corridors.emplace_back(corridor);
         this->Rooms.push_back(room);
     }
-
-
 }
 
 sf::Vector2f Map::Get_Spawn(){
