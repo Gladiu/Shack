@@ -102,7 +102,7 @@ void Map::Generate(){
                 }
             }
             corridor.GenerateCorridor(start,end);
-                                            std::cout<<"asd";
+
             this->Corridors.emplace_back(corridor);
 
         }

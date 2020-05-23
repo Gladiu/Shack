@@ -43,28 +43,27 @@ void Room::Generate(sf::Vector2f position,sf::Texture *input_texture,int where){
         Tiles.emplace_back(generated_tile);
     }
     //making so position and int where describe exact position of the room
-    //if where 0 position should describe position of middle left tile
-    //1 top 2 right 3 down, its all clockwise
-    std::vector<sf::Vector2f> Relations_between_tiles;
-    std::vector<sf::Vector2f> Positions_of_extreme_tiles;
+    //here its flipped so 2 = left 1  =down 0 = top
+    std::vector<sf::Vector2f> Relations_between_tiles (1);
+    std::vector<sf::Vector2f> Positions_of_extreme_tiles(1);
     for(auto& it:Tiles){
         switch(where){
-        case 0:
-            if(it.GetPosition().y == top_left_pos.y)
-                Positions_of_extreme_tiles.emplace_back(it.GetPosition());
-            break;
-        case 1:
-            if(it.GetPosition().x == top_left_pos.x)
-                Positions_of_extreme_tiles.emplace_back(it.GetPosition());
-            break;
-        case 2:
-            if(it.GetPosition().y == top_left_pos.y+size.y)
-                Positions_of_extreme_tiles.emplace_back(it.GetPosition());
-            break;
-        case 3:
-            if(it.GetPosition().x == top_left_pos.x+size.x)
-                Positions_of_extreme_tiles.emplace_back(it.GetPosition());
-            break;
+            case 2:
+                if(it.GetPosition().y == top_left_pos.y)
+                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                break;
+            case 3:
+                if(it.GetPosition().x == top_left_pos.x)
+                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                break;
+            case 0:
+                if(it.GetPosition().y == top_left_pos.y+size.y)
+                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                break;
+            case 1:
+                if(it.GetPosition().x == top_left_pos.x+size.x)
+                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                break;
         }
     }
     for(auto it:Tiles){
@@ -155,6 +154,7 @@ sf::Vector2f Room::GetValidExit(sf::Vector2f position_of_exit){
     bool down,top,left,right = false;//bool that says where is the current exit that we dont want to mess
     //finding in which direction to go
     for(auto it:Tiles){
+
         if(position_of_exit.x + Globals::SCALE*16 == it.GetPosition().x){
             down = true;
             break;
@@ -179,19 +179,32 @@ sf::Vector2f Room::GetValidExit(sf::Vector2f position_of_exit){
         switch(next_exit_pos){
         case 0:
             nextleft = true;
+            nextright = false;
+            nexttop = false;
+            nextdown = false;
             break;
         case 1:
             nexttop = true;
+            nextdown = false;
+            nextleft = false;
+            nextright = false;
             break;
         case 2:
             nextright = true;
+            nexttop = false;
+            nextdown = false;
+            nextleft = false;
             break;
         case 3:
             nextdown = true;
+            nextleft = false;
+            nextright = false;
+            nexttop = false;
             break;
         }
-        if(!((nextleft && left) || (nextright && right) || (nexttop && top) || (nextdown && down)))
+        if(!((nextleft && left) || (nextright && right) || (nexttop && top) || (nextdown && down))){
             finding = false;
+        }
     }
     finding = true;
     //finding middle tile
@@ -201,23 +214,28 @@ sf::Vector2f Room::GetValidExit(sf::Vector2f position_of_exit){
         finding = false;
         for(auto it:Tiles){
             if(nexttop && (buffer.x-Globals::SCALE*16 == it.GetPosition().x)){
-                buffer = it.GetPosition();
+                buffer.x -= Globals::SCALE*16;
                 finding = true;
+
             }
             if(nextdown && (buffer.x+Globals::SCALE*16 == it.GetPosition().x)){
-                buffer = it.GetPosition();
+                buffer.x += Globals::SCALE*16;
                 finding = true;
+
             }
             if(nextright && (buffer.y-Globals::SCALE*16 == it.GetPosition().y)){
-                buffer = it.GetPosition();
+                buffer.y -= Globals::SCALE*16;
                 finding = true;
+
             }
             if(nextleft && (buffer.y+Globals::SCALE*16==it.GetPosition().y)){
-                buffer = it.GetPosition();
+                buffer.y += Globals::SCALE*16;
                 finding = true;
+
             }
         }
     }
+
     return buffer;
 }
 
