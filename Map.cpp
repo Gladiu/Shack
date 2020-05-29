@@ -3,17 +3,20 @@
 #include <SFML/Graphics.hpp>
 #include "Map.hpp"
 #include "Tile.hpp"
+#include "Room.hpp"
 #include "Corridor.hpp"
 #include "Globals.hpp"
 #include <vector>
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 Map::Map(){
     std::cout<<"Loading Map assets..."<<std::endl;
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
+    ammount_of_rooms = 2;
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -24,16 +27,17 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
 void Map::Generate(){
     //generating rooms
     //basically its generating rooms, then corridor from it then next room etc
-    int ammount_of_rooms = 2;
+
     sf::Vector2f start,end,position,place_room_here;
     place_room_here = sf::Vector2f(0.0,0.0);
     int position_of_corridor = 0;
-    for(int i = 0; i<=ammount_of_rooms; i++){
+    for(int i = 0; i<ammount_of_rooms; i++){
 
         Room room;
-        Corridor corridor;
+
         if(i>0){
-            start = Rooms[Rooms.size()-1].GetValidExit(end);
+            Corridor corridor;
+            start = Rooms[i-1].GetValidExit(end);
 
             int direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();            
             int lenght = (std::rand()%10+4)*Globals::SCALE*16;
@@ -101,19 +105,23 @@ void Map::Generate(){
                         break;
                 }
             }
-            corridor.GenerateCorridor(start,end);
-                                            std::cout<<"asd";
-            this->Corridors.emplace_back(corridor);
 
+            corridor.GenerateCorridor(start,end);
+
+            this->Corridors.emplace_back(corridor);
+            room.AddExit(end);
         }
 
         room.Generate(place_room_here,&floor_texture,position_of_corridor);
+
         if(i==0){
-            end = room.GenerateLeftExit();
-            room.AddExit(end);
+            room.GenerateLeftExit();
         }
+        std::cout<<"X"<<std::endl;
         this->Rooms.emplace_back(room);
+        std::cout<<"X"<<std::endl;
     }
+    std::cout<<"DZIALAM"<<std::endl;
 }
 
 sf::Vector2f Map::Get_Spawn(){

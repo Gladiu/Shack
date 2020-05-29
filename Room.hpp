@@ -8,6 +8,7 @@ class Room : public sf::Drawable{
     //exits points must be out of bounds, its where corridor is starting!
     public:
         Room();
+        Room(const Room& other);
         void Generate(sf::Vector2f position,sf::Texture *input_texture,int where);
         sf::Vector2f Get_Top_Left_Corner();
         void Overlap_Fix(const Room &another_room);

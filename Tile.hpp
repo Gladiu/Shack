@@ -6,6 +6,7 @@
 class Tile : public sf::Drawable{
     public:
         Tile();
+        Tile(const Tile &other);
         void Generate(sf::Texture *input_texture);
         void setPos(float x,float y);
         void Move(const sf::Vector2f &offset);

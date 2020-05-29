@@ -29,15 +29,17 @@ void Corridor::GenerateCorridor(sf::Vector2f departurepos,sf::Vector2f finalpos)
             else
                 last_pos.x -= Globals::SCALE*16;
         }
-        else if(finalpos.y != last_pos.y){
-        if(finalpos.y > last_pos.y)
-            last_pos.y += Globals::SCALE*16;
-        else
-            last_pos.y -= Globals::SCALE*16;
+        if(finalpos.y != last_pos.y){
+            if(finalpos.y > last_pos.y)
+                last_pos.y += Globals::SCALE*16;
+            else
+                last_pos.y -= Globals::SCALE*16;
         }
-        else
+        if(finalpos == last_pos)
             generating = false;
+        Tiles.emplace_back(tile);
     }
+
 }
 
 void Corridor::SetNextLevelTrigger(bool trigger){

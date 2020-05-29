@@ -6,7 +6,14 @@
 #include <iostream>
 #include <cstdlib>
 Tile::Tile(){
+}
 
+Tile::Tile(const Tile &other){
+    this->transparent = other.transparent;
+    this->collide = other.collide;
+    this->is_exit = other.is_exit;
+    this->sprite = other.sprite;
+    this->texture = other.texture;
 }
 
 void Tile::Generate(sf::Texture *input_texture){

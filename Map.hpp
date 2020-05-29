@@ -13,7 +13,7 @@ class Map : public sf::Drawable{
         std::vector<sf::Vector2f> Generate_Path(sf::Vector2f position);
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
-
+        int ammount_of_rooms;
         std::vector<Room> Rooms;
         std::vector<Corridor> Corridors;
         sf::Texture floor_texture;

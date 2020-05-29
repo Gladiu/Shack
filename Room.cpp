@@ -10,14 +10,22 @@
 Room::Room(){
 }
 
+Room::Room(const Room& other){
+    this->top_left_pos = other.top_left_pos;
+    this->size = other.size;
+//    this->Tiles = other.Tiles;
+    this->ExitPos = other.ExitPos;
+    this->Connected_to_room = other.Connected_to_room;
+    this->has_exit = other.has_exit;
+}
 
 
 void Room::Generate(sf::Vector2f position,sf::Texture *input_texture,int where){
 
 
     //generating dimensions of room
-    this->size.y  = 16.0 * Globals::SCALE*(std::rand()%2+4);
-    this->size.x = 16.0 * Globals::SCALE*(std::rand()%2+4);
+    this->size.y  = 16.0 * Globals::SCALE*5;//(std::rand()%4+2);
+    this->size.x = 16.0 * Globals::SCALE*5;//(std::rand()%4+2);
     top_left_pos = sf::Vector2f(0.0,0.0);
 
     //filling room with floor tiles
@@ -28,18 +36,18 @@ void Room::Generate(sf::Vector2f position,sf::Texture *input_texture,int where){
     while(generating){
         Tile generated_tile;
         generated_tile.Generate(input_texture);
-        generated_tile.setPos(top_left_pos.x+last_tile_pos.x,
-                        top_left_pos.y+last_tile_pos.y);
+        generated_tile.setPos(last_tile_pos.x,last_tile_pos.y);
 
-        if(last_tile_pos.x < this->size.y)
-            last_tile_pos.x += 16.0*Globals::SCALE;
-        if(last_tile_pos.x >= this->size.y){
-            last_tile_pos.x = 0;
+        if(last_tile_pos.y < this->size.y)
             last_tile_pos.y += 16.0*Globals::SCALE;
-            }
-        if(last_tile_pos.y >= this->size.x)
+        if(last_tile_pos.y >= this->size.y){
+            last_tile_pos.y = 0;
+            last_tile_pos.x += 16.0*Globals::SCALE;
+        }
+        if(last_tile_pos.x > this->size.x){
             generating = false;
-
+            generated_tile.setPos(last_tile_pos.x,last_tile_pos.y);
+        }
         Tiles.emplace_back(generated_tile);
     }
     //making so position and int where describe exact position of the room
@@ -66,12 +74,13 @@ void Room::Generate(sf::Vector2f position,sf::Texture *input_texture,int where){
                 break;
         }
     }
-    for(auto it:Tiles){
+    for(auto& it:Tiles){
         Relations_between_tiles.emplace_back(it.GetPosition()-Positions_of_extreme_tiles[Positions_of_extreme_tiles.size()/2]);
     }
-    for(int i = 0; i < static_cast<int>(Tiles.size()); i++){
+    for(int i = 0; i <= static_cast<int>(Tiles.size()); i++){
         Tiles[i].setPos(Relations_between_tiles[i].x+position.x,Relations_between_tiles[i].y+position.y);
     }
+    top_left_pos = Tiles[0].GetPosition();
 }
 
 void Room::draw(sf::RenderTarget& target, sf::RenderStates states)const{
