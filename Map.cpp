@@ -16,7 +16,7 @@ Map::Map(){
     std::cout<<"Loading Map assets..."<<std::endl;
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
-    ammount_of_rooms = 2;
+    ammount_of_rooms = 1; //dziala dla 1 ale nie dziala dla 1<
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
