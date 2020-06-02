@@ -24,8 +24,8 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
 
 
     //generating dimensions of room
-    this->size.y  = 16.0 * Globals::SCALE*5;//(std::rand()%4+2);
-    this->size.x = 16.0 * Globals::SCALE*5;//(std::rand()%4+2);
+    this->size.y  = 16.0 * Globals::SCALE*(std::rand()%8+2);
+    this->size.x = 16.0 * Globals::SCALE*(std::rand()%8+2);
     top_left_pos = sf::Vector2f(0.0,0.0);
 
     //filling room with floor tiles
@@ -51,15 +51,10 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
         }
         Tiles.push_back(generated_tile);
     }
-    for(auto it:Tiles){
-        std::cout<<"X :"<<it.GetPosition().x<<std::endl;
-        std::cout<<"Y :"<<it.GetPosition().y<<std::endl;
-        std::cout<<std::endl;
-    }
     //making so position and int where describe exact position of the room
     //here its flipped so 2 = left 1  =down 0 = top
-    std::vector<sf::Vector2f> Relations_between_tiles (1);
-    std::vector<sf::Vector2f> Positions_of_extreme_tiles(1);
+    std::vector<sf::Vector2f> Relations_between_tiles;
+    std::vector<sf::Vector2f> Positions_of_extreme_tiles;
     for(auto& it:Tiles){
         switch(where){
             case 2:
@@ -80,19 +75,14 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
                 break;
         }
     }
-    for(auto& it:Tiles){
-        Relations_between_tiles.emplace_back(it.GetPosition()-Positions_of_extreme_tiles[Positions_of_extreme_tiles.size()/2]);
+    sf::Vector2f origin = Positions_of_extreme_tiles[Positions_of_extreme_tiles.size()/2];
+    for(auto it:Tiles){
+        Relations_between_tiles.emplace_back(it.GetPosition()-origin);
     }
     for(int i = 0; i <= static_cast<int>(Tiles.size()); i++){
         Tiles[i].setPos(Relations_between_tiles[i].x+position.x,Relations_between_tiles[i].y+position.y);
     }
     top_left_pos = Tiles[0].GetPosition();
-    std::cout<<"-----------------------------------------------"<<std::endl;
-    for(auto it:Tiles){
-        std::cout<<"X :"<<it.GetPosition().x<<std::endl;
-        std::cout<<"Y :"<<it.GetPosition().y<<std::endl;
-        std::cout<<std::endl;
-    }
 }
 
 void Room::draw(sf::RenderTarget& target, sf::RenderStates states)const{

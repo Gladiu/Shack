@@ -6,13 +6,13 @@
 class Player : public Entity {
     public:
         Player(Map level);
-        void Update();
         sf::Vector2f GetCenter();
-        void Interact(Map level);
-        bool IsMoving();
+        void SetPath(sf::Vector2f position);
+        void  Update(sf::Time time);
     protected:
 //        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         void UpdateMovingStatus();
-        bool in_move;
-        std::vector<sf::Vector2f> path;
+        bool in_desired_position;
+        sf::Vector2f desired_position;
+        float speed;
 };

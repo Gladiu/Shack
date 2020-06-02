@@ -16,15 +16,8 @@ Player::Player(Map level){
     entity_sprite.setOrigin(8.0,8.0);
     health.max=100;
     mana.max=100;
-    in_move = false;
-}
-
-//void Player::draw(sf::RenderTarget& target, sf::RenderStates states)const{
-//    target.draw(entity_sprite,states);
-//}
-
-void Player::Update(){
-//sf::Event user_event;
+    speed = 5;
+    in_desired_position = true;
 }
 
 sf::Vector2f Player::GetCenter(){
@@ -33,21 +26,28 @@ sf::Vector2f Player::GetCenter(){
     buffor.y+=0;
     return buffor;
 }
-void Player::UpdateMovingStatus(){
-    if(in_move)
-        in_move=false;
-    else
-        in_move=true;
+
+void Player::SetPath(sf::Vector2f position){
+    desired_position = position;
+    in_desired_position = false;
+    std::cout<<desired_position.x<<desired_position.y<<std::endl;
 }
 
-bool Player::IsMoving(){
-    return in_move;
-}
-
-void Player::Interact(Map level){
-//    this->UpdateMovingStatus();
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left) && !in_move){
-    path = level.Generate_Path(entity_sprite.getPosition());
+void Player::Update(sf::Time time){
+    if(!in_desired_position){
+        std::cout<<time.asMilliseconds()<<std::endl;
+        sf::Vector2f movement;
+        if(desired_position.x<entity_sprite.getPosition().x)
+            movement.x -=speed*time.asMilliseconds();
+        if(desired_position.x>entity_sprite.getPosition().x)
+            movement.x +=speed*time.asMilliseconds();
+        if(desired_position.y<entity_sprite.getPosition().y)
+            movement.y -=speed*time.asMilliseconds();
+        if(desired_position.y>entity_sprite.getPosition().y)
+            movement.y +=speed*time.asMilliseconds();
+        if(desired_position == entity_sprite.getPosition()){
+            in_desired_position = true;
+        }
+        entity_sprite.move(movement);
     }
-
 }

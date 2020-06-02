@@ -16,7 +16,8 @@ Map::Map(){
     std::cout<<"Loading Map assets..."<<std::endl;
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
-    ammount_of_rooms = 2; //dziala dla 1 ale nie dziala dla 1<
+    floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
+    ammount_of_rooms = 30; //dziala dla 1 ale nie dziala dla 1<
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -29,7 +30,7 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
 void Map::Generate(){
     //generating rooms
     //basically its generating rooms, then corridor from it then next room etc
-    std::shared_ptr<sf::Texture> floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
+
     sf::Vector2f start,end,position,place_room_here;
     place_room_here = sf::Vector2f(0.0,0.0);
     int position_of_corridor = 0;
@@ -39,10 +40,11 @@ void Map::Generate(){
 
         if(i>0){
             Corridor corridor;
+            corridor.GiveTexture(floor_texture_ptr);
             start = Rooms[i-1].GetValidExit(end);
 
             int direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();            
-            int lenght = (std::rand()%10+4)*Globals::SCALE*16;
+            int lenght = (std::rand()%10+6)*Globals::SCALE*16;
             bool colliding = false;
 
             while(colliding){
@@ -114,7 +116,7 @@ void Map::Generate(){
             room.AddExit(end);
         }
 
-        room.Generate(place_room_here,floor_texture_ptr,position_of_corridor);
+        room.Generate(end,floor_texture_ptr,position_of_corridor);
 
         if(i==0){
             room.GenerateLeftExit();

@@ -14,20 +14,23 @@
 
 int main(){
     srand(time(NULL));
-//declaring starting states and objects
+    //declaring starting states and objects
+    sf::Vector2f mouse_position;
     sf::RenderWindow game_window(sf::VideoMode(1200,860),"Shack Indev");
     sf::View game_view(sf::Vector2f(0.0,0.0),static_cast<sf::Vector2f>(game_window.getSize()));
     Map level;
     level.Generate();
-
     Player player(level);
+    sf::Clock clock;
 
     //game loop
     while(game_window.isOpen()){
         game_window.clear();
         sf::Event user_event;
+        sf::Time elapsed = clock.restart();
 
         while(game_window.pollEvent(user_event)){
+
             //closing game when window is closed
             if(user_event.type == sf::Event::Closed){
                 game_window.close();
@@ -38,11 +41,22 @@ int main(){
                 sf::FloatRect visibleArea(0, 0, user_event.size.width, user_event.size.height);
                 game_window.setView(sf::View(visibleArea));
             }
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                // get the current mouse position in the window
+                sf::Vector2i temp;
+                temp = sf::Mouse::getPosition(game_window);
+                // convert it to world coordinates
+                mouse_position = game_window.mapPixelToCoords(temp);
+                if(true){
+                    player.SetPath(mouse_position);
+                }
+            }
         }
 
 
 //getting input and updating game
-//        player.Interact(level);
+        player.Update(elapsed);
 
 //centering view on character
         game_view.setCenter(0.0,0.0);
@@ -55,6 +69,7 @@ int main(){
         game_window.draw(level);
         game_window.draw(player);
         game_window.display();
+
 
     }
 
