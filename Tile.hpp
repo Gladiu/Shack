@@ -2,12 +2,13 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class Tile : public sf::Drawable{
     public:
         Tile();
         Tile(const Tile &other);
-        void Generate(sf::Texture *input_texture);
+        void Generate(std::shared_ptr<sf::Texture> input_texture);
         void setPos(float x,float y);
         void Move(const sf::Vector2f &offset);
         sf::Vector2f GetPosition();
@@ -20,6 +21,6 @@ class Tile : public sf::Drawable{
         bool collide;
         bool is_exit;
         sf::Sprite sprite;
-        sf::Texture *texture;
+        std::shared_ptr<sf::Texture> texture;
 
 };

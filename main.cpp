@@ -19,6 +19,7 @@ int main(){
     sf::View game_view(sf::Vector2f(0.0,0.0),static_cast<sf::Vector2f>(game_window.getSize()));
     Map level;
     level.Generate();
+
     Player player(level);
 
     //game loop

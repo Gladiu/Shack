@@ -12,7 +12,7 @@ void Corridor::draw(sf::RenderTarget& target, sf::RenderStates states)const{
     for(auto it:Tiles)
         target.draw(it,states);
 }
-void Corridor::GiveTexture(sf::Texture *input_texture){
+void Corridor::GiveTexture(std::shared_ptr<sf::Texture> input_texture){
     this->texture_ptr = input_texture;
 }
 

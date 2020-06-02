@@ -16,7 +16,7 @@ Tile::Tile(const Tile &other){
     this->texture = other.texture;
 }
 
-void Tile::Generate(sf::Texture *input_texture){
+void Tile::Generate(std::shared_ptr<sf::Texture> input_texture){
     input_texture->setRepeated(true);
     sprite.setTexture(*input_texture);
     sprite.scale(Globals::SCALE,Globals::SCALE);

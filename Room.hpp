@@ -9,7 +9,7 @@ class Room : public sf::Drawable{
     public:
         Room();
         Room(const Room& other);
-        void Generate(sf::Vector2f position,sf::Texture *input_texture,int where);
+        void Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_texture,int where);
         sf::Vector2f Get_Top_Left_Corner();
         void Overlap_Fix(const Room &another_room);
         bool Collision_Check(Room another_room);
