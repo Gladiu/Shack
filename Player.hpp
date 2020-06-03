@@ -14,5 +14,7 @@ class Player : public Entity {
         void UpdateMovingStatus();
         bool in_desired_position;
         sf::Vector2f desired_position;
-        float speed;
+        sf::Vector2f temp;
+        bool first_move_check;
+
 };

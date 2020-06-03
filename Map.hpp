@@ -16,6 +16,7 @@ class Map : public sf::Drawable{
         int ammount_of_rooms;
         std::vector<Room> Rooms;
         std::vector<Corridor> Corridors;
+        std::vector<sf::Vector2f> Position_of_tiles;
         sf::Texture floor_texture;
         std::shared_ptr<sf::Texture> floor_texture_ptr;
         sf::Texture wall_texture;

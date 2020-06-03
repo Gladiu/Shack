@@ -53,35 +53,37 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
     }
     //making so position and int where describe exact position of the room
     //here its flipped so 2 = left 1  =down 0 = top
-    std::vector<sf::Vector2f> Relations_between_tiles;
-    std::vector<sf::Vector2f> Positions_of_extreme_tiles;
+    std::vector<sf::Vector2f> Relations_between_tiles(1);
+    std::vector<sf::Vector2f> Positions_of_extreme_tiles(1);
     for(auto& it:Tiles){
         switch(where){
             case 2:
                 if(it.GetPosition().y == top_left_pos.y)
-                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                    Positions_of_extreme_tiles.push_back(it.GetPosition());
                 break;
             case 3:
                 if(it.GetPosition().x == top_left_pos.x)
-                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                    Positions_of_extreme_tiles.push_back(it.GetPosition());
                 break;
             case 0:
                 if(it.GetPosition().y == top_left_pos.y+size.y)
-                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                    Positions_of_extreme_tiles.push_back(it.GetPosition());
                 break;
             case 1:
                 if(it.GetPosition().x == top_left_pos.x+size.x)
-                    Positions_of_extreme_tiles.emplace_back(it.GetPosition());
+                    Positions_of_extreme_tiles.push_back(it.GetPosition());
                 break;
         }
     }
     sf::Vector2f origin = Positions_of_extreme_tiles[Positions_of_extreme_tiles.size()/2];
     for(auto it:Tiles){
-        Relations_between_tiles.emplace_back(it.GetPosition()-origin);
+        Relations_between_tiles.push_back(it.GetPosition()-origin);
     }
-    for(int i = 0; i <= static_cast<int>(Tiles.size()); i++){
+    for(int i = 0; i <= static_cast<int>(Tiles.size())-1; i++){
         Tiles[i].setPos(Relations_between_tiles[i].x+position.x,Relations_between_tiles[i].y+position.y);
     }
+    Relations_between_tiles.clear();
+    Positions_of_extreme_tiles.clear();
     top_left_pos = Tiles[0].GetPosition();
 }
 
@@ -262,7 +264,7 @@ sf::Vector2f Room::GenerateLeftExit(){
     sf::Vector2f buffer;
     buffer.x = top_left_pos.x+(size.x/2);
     buffer.y = top_left_pos.y;
-    this->ExitPos.emplace_back(buffer);
+    this->ExitPos.push_back(buffer);
     return buffer;
 }
 int Room::GetDirectionOfExit(){

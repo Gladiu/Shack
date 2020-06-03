@@ -22,13 +22,15 @@ int main(){
     level.Generate();
     Player player(level);
     sf::Clock clock;
+    sf::Time elapsed;
+
 
     //game loop
     while(game_window.isOpen()){
         game_window.clear();
         sf::Event user_event;
-        sf::Time elapsed = clock.restart();
-
+        //updating clocks
+        elapsed = clock.restart();
         while(game_window.pollEvent(user_event)){
 
             //closing game when window is closed
@@ -43,13 +45,17 @@ int main(){
             }
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
+                //handling actions of character
+
                 // get the current mouse position in the window
                 sf::Vector2i temp;
                 temp = sf::Mouse::getPosition(game_window);
                 // convert it to world coordinates
                 mouse_position = game_window.mapPixelToCoords(temp);
+
                 if(true){
                     player.SetPath(mouse_position);
+
                 }
             }
         }

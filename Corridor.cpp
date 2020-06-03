@@ -29,7 +29,7 @@ void Corridor::GenerateCorridor(sf::Vector2f departurepos,sf::Vector2f finalpos)
             else
                 last_pos.x -= Globals::SCALE*16;
         }
-        if(finalpos.y != last_pos.y){
+        else if(finalpos.y != last_pos.y){
             if(finalpos.y > last_pos.y)
                 last_pos.y += Globals::SCALE*16;
             else
