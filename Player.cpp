@@ -35,6 +35,8 @@ sf::Vector2f Player::GetCenter(){
 
 void Player::SetPath(sf::Vector2f position){
     //introduce path finding alghoritm in future
+    position.x = static_cast<int>(position.x);
+    position.y = static_cast<int>(position.y);
     desired_position = position;
     in_desired_position = false;
     first_move_check = true;
@@ -62,15 +64,17 @@ void Player::Update(sf::Time time){
             first_move_check = false;
         }
         //teleport,shaking fix
-        if(std::abs(entity_sprite.getPosition().x-desired_position.x)<1)
+        if(std::abs(entity_sprite.getPosition().x-desired_position.x)<1 || (temp.x > 0 && movement.x<0) || (temp.x < 0 && movement.x > 0)){
             entity_sprite.setPosition(desired_position.x,entity_sprite.getPosition().y);
-        if(std::abs(entity_sprite.getPosition().y-desired_position.y)<1)
-            entity_sprite.setPosition(entity_sprite.getPosition().x,desired_position.y);
-        if(std::abs(entity_sprite.getPosition().x-desired_position.x) == 0 && std::abs(entity_sprite.getPosition().y-desired_position.y) == 0){
-            in_desired_position = true;
-            entity_sprite.setRotation(0);
+            movement.x = 0;
         }
-
+        if(std::abs(entity_sprite.getPosition().y-desired_position.y)<1 || (temp.y > 0 && movement.y<0) || (temp.y < 0 && movement.y > 0)){
+            entity_sprite.setPosition(entity_sprite.getPosition().x,desired_position.y);
+            movement.y = 0;
+        }
+        /*std::cout<<"Xd :"<<desired_position.x<<" Yd :"<<desired_position.y<<std::endl;
+        std::cout<<"Xc :"<<entity_sprite.getPosition().x<<" Yc :"<<entity_sprite.getPosition().y<<std::endl;
+        std::cout<<"Xm :"<<movement.x<<" Ym :"<<movement.y<<std::endl;*/
         //walking animation
         if(entity_sprite.getRotation() >=(max_rotation) && entity_sprite.getRotation() <=(360-max_rotation))
             rotation_speed = -rotation_speed;
@@ -83,7 +87,12 @@ void Player::Update(sf::Time time){
         //moving and rotating sprite;
         entity_sprite.rotate(time.asSeconds()*rotation_speed);
         entity_sprite.move(movement);
-
+        //entity_sprite.setPosition(static_cast<int>(entity_sprite.getPosition().x),static_cast<int>(entity_sprite.getPosition().y));
+        if(entity_sprite.getPosition().x == desired_position.x  && entity_sprite.getPosition().y == desired_position.y){
+            entity_sprite.setRotation(0);
+            in_desired_position = true;
+        }
+        //std::cout<<in_desired_position<<std::endl;
     }
-
+    //std::cout<<entity_sprite.getRotation()<<std::endl<<std::endl;
 }

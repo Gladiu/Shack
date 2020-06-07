@@ -329,3 +329,11 @@ bool Room::WillCollide(int direction, int lenght,const sf::Vector2f position){
 void Room::ReplaceExit(sf::Vector2f newexit){
     this->ExitPos[1] = newexit;
 }
+
+std::vector<Tile> Room::GetTiles(){
+    return Tiles;
+}
+
+Tile Room::Get_First_Tile(){
+    return Tiles[0];
+}

@@ -22,6 +22,8 @@ class Room : public sf::Drawable{
         int GetDirectionOfExit();
         bool WillCollide(int direction, int lenght,const sf::Vector2f position);
         void ReplaceExit(sf::Vector2f newexit);
+        std::vector<Tile> GetTiles();
+        Tile Get_First_Tile();
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
     private:
