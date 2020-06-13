@@ -11,6 +11,7 @@ Entity::Entity(){
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
     target.draw(entity_sprite,states);
 }
+void Entity::Update(sf::Time time){}
 
 
 

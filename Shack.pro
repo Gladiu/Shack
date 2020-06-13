@@ -10,6 +10,7 @@ SOURCES += \
         Entity.cpp \
         Globals.cpp \
         Map.cpp \
+        Monster.cpp \
         Player.cpp \
         Room.cpp \
         Tile.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     Entity.hpp \
     Globals.hpp \
     Map.hpp \
+    Monster.hpp \
     Player.hpp \
     Room.hpp \
     Tile.hpp

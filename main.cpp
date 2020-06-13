@@ -9,6 +9,7 @@
 #include "Corridor.hpp"
 #include "Globals.hpp"
 #include "Background.hpp"
+#include "Monster.hpp"
 #include <iostream>
 
 
@@ -17,7 +18,7 @@ int main(){
     srand(time(NULL));
     //declaring starting states and objects
     sf::Vector2f mouse_position;
-    sf::RenderWindow game_window(sf::VideoMode(1200,860),"Shack Indev");
+    sf::RenderWindow game_window(sf::VideoMode(1200,860),"Shack Alpha");
     sf::View game_view(sf::Vector2f(0.0,0.0),static_cast<sf::Vector2f>(game_window.getSize()));
     sf::View static_view = game_view;
     Map level;
@@ -26,7 +27,13 @@ int main(){
     Player player(level);
     sf::Clock clock;
     sf::Time elapsed;
+    std::vector<Monster> Enemies;
+    //setting render distance and render point
+    level.UpdateRenderCenter(player.GetPosition());
+    level.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
 
+    stars.UpdateRenderCenter(sf::Vector2f(0.0,0.0));
+    stars.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
 
     //game loop
     while(game_window.isOpen()){
@@ -45,6 +52,9 @@ int main(){
             {
                 sf::FloatRect visibleArea(0.f, 0.f, user_event.size.width, user_event.size.height);
                 game_view = sf::View(visibleArea);
+                static_view.setSize(user_event.size.width, user_event.size.height);
+                level.SetRenderDistance(Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
+                stars.SetRenderDistance(Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
             }
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
             {
@@ -70,6 +80,11 @@ int main(){
 
 //getting input and updating game
         player.Update(elapsed);
+        level.UpdateRenderCenter(player.GetPosition());
+        for(auto &it:Enemies){
+            it.Update(elapsed);
+            player.Interact(it);
+        }
 //centering view on character
         game_view.setCenter(0.0,0.0);
         game_view.move(player.GetPosition());
@@ -77,6 +92,8 @@ int main(){
 
 
 //displaying everything
+        for(auto &it:Enemies)
+            game_window.draw(it);
         game_window.draw(level);
         game_window.draw(player);
         game_window.display();

@@ -19,12 +19,13 @@ Map::Map(){
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
     floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
-    ammount_of_rooms = 200; //bigger means less fps
+    ammount_of_rooms = 1000; //bigger means less fps
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
     for(auto &it: TilePos){
-            target.draw(LevelTiles[it.x][it.y],states);
+            if(Globals::DISTANCE(LevelTiles[it.x][it.y].GetPosition(),render_center)<render_distance)
+                target.draw(LevelTiles[it.x][it.y],states);
     }
 }
 
@@ -193,6 +194,12 @@ bool Map::IsEmpty(const sf::FloatRect & rect){
     }
     return anwser;
 }
+void Map::UpdateRenderCenter(sf::Vector2f position){
+    render_center = position;
+}
 
+void Map::SetRenderDistance(float distance){
+    render_distance = distance;
+}
 
 

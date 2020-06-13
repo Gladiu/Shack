@@ -20,7 +20,7 @@ Player::Player(Map level){
     entity_sprite.setOrigin(8.0,10.0);
     health.max=100;
     mana.max=100;
-    speed = 400;
+    speed = 500;
     rotation_speed = 350;
     max_rotation = 25;
     in_desired_position = true;
@@ -31,11 +31,13 @@ sf::Vector2f Player::GetPosition(){
     return  entity_sprite.getPosition();
 }
 
-void Player::SetPath(sf::Vector2f position){
+void Player::SetPath(const sf::Vector2f &position){
     path = position;
     in_desired_position = false;
     first_move_check = true;
-
+    float temp = Globals::DISTANCE(position,entity_sprite.getPosition());
+    speed_vector.x = std::abs(((position.x-entity_sprite.getPosition().x)/temp)*speed);
+    speed_vector.y = std::abs(((position.y-entity_sprite.getPosition().y)/temp)*speed);
 }
 
 void Player::IsFalling(bool outsidemap){
@@ -54,13 +56,13 @@ void Player::Update(sf::Time time){
             //moving sprite
             sf::Vector2f movement;
             if(path.x<entity_sprite.getPosition().x)
-                movement.x -=speed*time.asSeconds();
+                movement.x -=speed_vector.x*time.asSeconds();
             if(path.x>entity_sprite.getPosition().x)
-                movement.x +=speed*time.asSeconds();
+                movement.x +=speed_vector.x*time.asSeconds();
             if(path.y<entity_sprite.getPosition().y)
-                movement.y -=speed*time.asSeconds();
+                movement.y -=speed_vector.y*time.asSeconds();
             if(path.y>entity_sprite.getPosition().y)
-                movement.y +=speed*time.asSeconds();
+                movement.y +=speed_vector.y*time.asSeconds();
 
             if(first_move_check){
                 temp = movement;
@@ -108,4 +110,7 @@ void Player::Update(sf::Time time){
         entity_sprite.setScale(Scale);
         entity_sprite.setColor(kolor );
     }
+}
+void Player::Interact(Monster monster){
+
 }
