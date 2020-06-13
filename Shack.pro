@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        Background.cpp \
+        Boom.cpp \
         Corridor.cpp \
         Entity.cpp \
         Globals.cpp \
@@ -21,6 +23,8 @@ CONFIG(debug, debug|release){
 }
 
 HEADERS += \
+    Background.hpp \
+    Boom.hpp \
     Corridor.hpp \
     Entity.hpp \
     Globals.hpp \

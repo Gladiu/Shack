@@ -6,25 +6,25 @@
 #include "Room.hpp"
 #include "Corridor.hpp"
 #include "Globals.hpp"
+#include <math.h>
 #include <vector>
 #include <iostream>
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 Map::Map(){
     std::cout<<"Loading Map assets..."<<std::endl;
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
     floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
-    ammount_of_rooms = 20; //bigger means less fps
+    ammount_of_rooms = 200; //bigger means less fps
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
-    for(auto &it:LevelTiles ){
-        for(auto &at:it){
-            target.draw(at,states);
-        }
+    for(auto &it: TilePos){
+            target.draw(LevelTiles[it.x][it.y],states);
     }
 }
 
@@ -42,42 +42,20 @@ void Map::Generate(){
         Room room;
 
         if(i>0){
+
             Corridor corridor;
             corridor.GiveTexture(floor_texture_ptr);
             start = Rooms[i-1].GetValidExit(end);
 
-            int direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();            
-            int lenght = (std::rand()%10+4)*Globals::SCALE*16;
-/*            bool colliding = true;
-            while(colliding){
-                colliding = false;
-                for(auto it : Rooms){
-                    //colliding = it.WillCollide(direction_of_next_corridor,lenght,start);
-                    if(colliding)
-                        break;
-
-                }
-                for(auto it : Corridors){
-                    //colliding = it.WillCollide(direction_of_next_corridor,lenght,start);
-                    if(colliding)
-                        break;
-                }
-                if(colliding){
-                    start = Rooms[i-1].GetValidExit(start);
-                    direction_of_next_corridor = Rooms[i-1].GetDirectionOfExit();
-                    lenght = (std::rand()%10+4)*Globals::SCALE*16;
-                }
-
-            }*/
-            //1 top 2 right 3 down, its all clockwise
-            //direction corridor., at the end of it we will generate a room
+            int direction_of_next_corridor = std::rand()%4;// Rooms[i-1].GetDirectionOfExit();
+            int lenght = (std::rand()%10+1)*Globals::SCALE*16;
             Rooms[i-1].AddExit(start);
             bool generating = true;
             while(generating){
                 switch(direction_of_next_corridor){
                     case 0:
                         end.y -= Globals::SCALE*16;
-                        if(end.y == start.y - lenght){
+                        if(end.y <= start.y - lenght){
                             place_room_here.y = start.y + lenght;
                             place_room_here.x = start.x;
                             generating = false;
@@ -85,7 +63,7 @@ void Map::Generate(){
                         break;
                     case 1:
                         end.x -= Globals::SCALE*16;
-                        if(end.x == start.x - lenght){
+                        if(end.x <= start.x - lenght){
                             place_room_here.x = start.x + lenght;
                             place_room_here.y = start.y;
                             generating = false;
@@ -93,7 +71,7 @@ void Map::Generate(){
                         break;
                     case 2:
                         end.y += Globals::SCALE*16;
-                        if(end.y == start.y + lenght){
+                        if(end.y >= start.y + lenght){
                             place_room_here.y = start.y + lenght;
                             place_room_here.x = start.x;
                             generating = false;
@@ -101,7 +79,7 @@ void Map::Generate(){
                         break;
                     case 3:
                         end.x += Globals::SCALE*16;
-                        if(end.x == start.x + lenght){
+                        if(end.x >= start.x + lenght){
                             place_room_here.x = start.x + lenght;
                             place_room_here.y = start.y;
                             generating = false;
@@ -124,7 +102,8 @@ void Map::Generate(){
         Rooms.push_back(room);
     }
     //add function to add all tiles into one vector
-    sf::Vector2f beginning_of_map,end_of_map = sf::Vector2f(0.0,0.0);
+    sf::Vector2f end_of_map = sf::Vector2f(0.0,0.0);
+    beginning_of_map = sf::Vector2f(0.0,0.0);
     for(auto &it: Rooms){
         for(auto &at:it.GetTiles()){
             if( beginning_of_map.x > at.GetPosition().x )
@@ -158,10 +137,11 @@ void Map::Generate(){
         for(int j = 0; j <= size.y; j++){
             yplace.emplace_back(temp);
         }
-        for(int i = 0; i <= size.x; i++){
+        for(int i = 0; i <=  size.x; i++){
             LevelTiles.emplace_back(yplace);
         }
     }
+    spawn_space_of_player = Rooms[0].GetTiles()[0].GetPosition();
     for(auto &it: Rooms){
         std::vector room_tiles = it.GetTiles();
         for(auto &at:room_tiles){
@@ -169,6 +149,7 @@ void Map::Generate(){
             y = ((at.GetPosition().y-beginning_of_map.y)/(16*Globals::SCALE));
             if(LevelTiles[x][y].GetEmpty()){
                 LevelTiles[x][y].Generate(floor_texture_ptr);
+                LevelTiles[x][y].setTextureRect(sf::IntRect(std::rand()%4*16,0,16,16));
                 LevelTiles[x][y].setPos(at.GetPosition().x,at.GetPosition().y);
             }
         }
@@ -180,16 +161,38 @@ void Map::Generate(){
             y = ((at.GetPosition().y-beginning_of_map.y)/(16*Globals::SCALE));
             if(LevelTiles[x][y].GetEmpty()){
                 LevelTiles[x][y].Generate(floor_texture_ptr);
+                LevelTiles[x][y].setTextureRect(sf::IntRect(std::rand()%4*16,0,16,16));
                 LevelTiles[x][y].setPos(at.GetPosition().x,at.GetPosition().y);
             }
         }
     }
+    int i =0;
+    int j =0;
+    for(auto &it:LevelTiles ){
+
+        for(auto &at:it){
+            if(!at.GetEmpty())
+                TilePos.emplace_back(sf::Vector2f(i,j));
+            j++;
+        }
+        j=0;
+        i++;
+    }
+
 
 }
 
 sf::Vector2f Map::Get_Spawn(){
-    spawn_space_of_player = sf::Vector2f(0.0,0.0);
     return spawn_space_of_player;
 }
+bool Map::IsEmpty(const sf::FloatRect & rect){
+    bool anwser = true;
+    for(auto &it:TilePos){
+            if(LevelTiles[it.x][it.y].GetGlobalBounds().intersects(rect))
+                anwser = false;
+    }
+    return anwser;
+}
+
 
 

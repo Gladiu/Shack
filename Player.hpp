@@ -6,15 +6,19 @@
 class Player : public Entity {
     public:
         Player(Map level);
-        sf::Vector2f GetCenter();
+        sf::Vector2f GetPosition();
         void SetPath(sf::Vector2f position);
         void  Update(sf::Time time);
+        void IsFalling(bool outsidemap);
+        sf::FloatRect GetGlobalBounds();
     protected:
-//        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         void UpdateMovingStatus();
+        bool can_control;
+        bool falling;
         bool in_desired_position;
         sf::Vector2f desired_position;
         sf::Vector2f temp;
         bool first_move_check;
+        sf::Vector2f path;
 
 };

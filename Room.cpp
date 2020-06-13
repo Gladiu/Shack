@@ -24,8 +24,8 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
 
 
     //generating dimensions of room
-    this->size.y  = 16.0 * Globals::SCALE*(std::rand()%8+2);
-    this->size.x = 16.0 * Globals::SCALE*(std::rand()%8+2);
+    this->size.y  = 16.0 * Globals::SCALE*(std::rand()%8+3);
+    this->size.x = 16.0 * Globals::SCALE*(std::rand()%8+3);
     top_left_pos = sf::Vector2f(0.0,0.0);
 
     //filling room with floor tiles
@@ -40,15 +40,14 @@ void Room::Generate(sf::Vector2f position,std::shared_ptr<sf::Texture> input_tex
 
         if(last_tile_pos.y < this->size.y)
             last_tile_pos.y += 16.0*Globals::SCALE;
-        else{
-            if(last_tile_pos.y >= this->size.y){
-                last_tile_pos.y = 0;
-                last_tile_pos.x += 16.0*Globals::SCALE;
-            }
-            if(last_tile_pos.x > this->size.x){
+        if(last_tile_pos.y >= this->size.y){
+            last_tile_pos.y = 0;
+            last_tile_pos.x += 16.0*Globals::SCALE;
+        }
+        else if(last_tile_pos.x >= this->size.x ){
                 generating = false;
             }
-        }
+
         Tiles.push_back(generated_tile);
     }
     //making so position and int where describe exact position of the room

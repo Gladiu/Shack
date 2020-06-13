@@ -7,13 +7,11 @@
 #include <cstdlib>
 Tile::Tile(){
     is_exit = false;
-    is_empty = true;
     position = sf::Vector2f(0.0,0.0);
 }
 
 Tile::Tile(const Tile &other){
     this->is_exit = other.is_exit;
-    this->is_empty = other.is_empty;
     this->sprite = other.sprite;
     this->texture = other.texture;
     this->position = other.position;
@@ -21,14 +19,13 @@ Tile::Tile(const Tile &other){
 
 
 void Tile::Generate(std::shared_ptr<sf::Texture> input_texture){
-    is_empty = false;
-    input_texture->setRepeated(true);
-    sprite.setTexture(*input_texture);
+    texture = input_texture;
+    sprite.setTexture(*texture);
     sprite.scale(Globals::SCALE,Globals::SCALE);
 }
 
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states)const{
-    if(!is_empty)
+    if(texture!=nullptr)
         target.draw(sprite,states);
 }
 
@@ -43,7 +40,7 @@ void Tile::Move(const sf::Vector2f &offset){
     position.x += offset.x;
     position.y += offset.y;
 }
-sf::Vector2f Tile::GetPosition(){
+sf::Vector2f Tile::GetPosition()const{
    return sprite.getPosition();
 }
 sf::Vector2f Tile::GetSize(){
@@ -57,5 +54,20 @@ bool Tile::Overlap(const Tile& tile){
 }
 
 bool Tile::GetEmpty(){
-    return is_empty;
+    return (texture == nullptr);
+}
+
+sf::FloatRect Tile::GetGlobalBounds(){
+    return sprite.getGlobalBounds();
+}
+
+void Tile::setTextureRect(const sf::IntRect &rect){
+    sprite.setTextureRect(rect);
+}
+sf::Color Tile::getColor(){
+    return sprite.getColor();
+}
+
+void Tile::SetColor(sf::Color kolor){
+    sprite.setColor(kolor);
 }

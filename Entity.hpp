@@ -10,8 +10,6 @@ class Entity : public sf::Drawable{
             int current;
             int max;
         };
-
-
         Value health,mana;
         sf::Texture entity_texture;
         sf::Sprite entity_sprite;
