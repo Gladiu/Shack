@@ -3,7 +3,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <Tile.hpp>
-#include <Room.hpp>
+
 class Corridor : public sf::Drawable{
     public:
         void GiveTexture(std::shared_ptr<sf::Texture> input_texture);

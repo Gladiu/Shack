@@ -6,6 +6,7 @@
 #include "Room.hpp"
 #include "Corridor.hpp"
 #include "Globals.hpp"
+#include "Boom.hpp"
 #include <math.h>
 #include <vector>
 #include <iostream>
@@ -19,7 +20,7 @@ Map::Map(){
     this->floor_texture.loadFromFile("textures/floor.png");
     this->floor_texture.setRepeated(true);
     floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
-    ammount_of_rooms = 1000; //bigger means less fps
+    ammount_of_rooms = 200; //bigger means less fps
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -186,20 +187,44 @@ void Map::Generate(){
 sf::Vector2f Map::Get_Spawn(){
     return spawn_space_of_player;
 }
-bool Map::IsEmpty(const sf::FloatRect & rect){
-    bool anwser = true;
+void Map::CheckIfFalling(Entity &smth){
+    sf::FloatRect rect = smth.GetGlobalBounds();
+    rect.width /=1.5;
+    rect.height /=1.5;
+    bool outsidemap = true;
     for(auto &it:TilePos){
-            if(LevelTiles[it.x][it.y].GetGlobalBounds().intersects(rect))
-                anwser = false;
+            if(Globals::DISTANCE(LevelTiles[it.x][it.y].GetPosition(),render_center) < render_distance && LevelTiles[it.x][it.y].GetGlobalBounds().intersects(rect)){
+                outsidemap = false;
+                break;
+            }
     }
-    return anwser;
+    smth.IsFalling(outsidemap);
+
 }
+void Map::CheckIfFalling(std::vector<Entity> &smth){
+    for(auto &it:smth){
+        if(Globals::DISTANCE(it.GetPosition(),render_center)<render_distance)
+            CheckIfFalling(it);
+    }
+
+}
+
+
 void Map::UpdateRenderCenter(sf::Vector2f position){
     render_center = position;
 }
 
 void Map::SetRenderDistance(float distance){
     render_distance = distance;
+}
+
+std::vector<sf::Vector2f> Map::GetSpawningSpaces(){
+    std::vector<sf::Vector2f> anwser;
+    for(auto &it:TilePos){
+        if(Globals::DISTANCE(LevelTiles[it.x][it.y].GetPosition(),render_center)>render_distance)
+            anwser.emplace_back(LevelTiles[it.x][it.y].GetPosition());
+    }
+    return anwser;
 }
 
 

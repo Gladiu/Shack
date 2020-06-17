@@ -3,6 +3,7 @@
 #include <iostream>
 
 Background::Background(){
+    std::cout<<"Loading Background assets..."<<std::endl;
     texture.loadFromFile("textures/stars.png");
     std::shared_ptr<sf::Texture> textptr = std::make_shared<sf::Texture>(texture);
     this->size.y  = 16.0 * Globals::SCALE*40;
@@ -43,6 +44,11 @@ Background::Background(){
     for(auto &it:background_for_tiles){
         it.setTextureRect(sf::IntRect(5*16,0,16,16));
     }
+    for(auto &it:glowing_tiles){
+        sf::Color temp = bck_tiles[it.first].getColor();
+        temp.a = std::rand()%250;
+        bck_tiles[it.first].SetColor(temp);
+    }
 }
 
 void Background::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -62,13 +68,15 @@ void Background::Proces(sf::Time time){
         if(temp.a<10 && it.second == true){
             it.second = false;
         }
-        if(temp.a > 240 && it.second == false){
+        if(temp.a > 200 && it.second == false){
             it.second = true;
         }
-        if(it.second)
-            temp.a -= .5;
-        else
-            temp.a += 1;
+        if(it.second){
+            temp.a -= 10*time.asSeconds();
+        }
+        if(!it.second){
+            temp.a += 500*time.asSeconds();
+        }
         bck_tiles[it.first].SetColor(temp);
     }
 

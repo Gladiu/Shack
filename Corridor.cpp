@@ -1,7 +1,6 @@
 #include "Corridor.hpp"
-#include "Map.hpp"
-#include <Tile.hpp>
-#include <Room.hpp>
+#include "Tile.hpp"
+#include "Room.hpp"
 #include "Globals.hpp"
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
