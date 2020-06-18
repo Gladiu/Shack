@@ -1,13 +1,12 @@
 #pragma once
 #include "Entity.hpp"
-#include <vector>
-#include <memory>
 
-class Boom : public Entity{
+class Robot:public Entity{
 public:
-    Boom();
+    Robot();
     void SetPosition(sf::Vector2f position);
     void SetTexture(const std::shared_ptr<sf::Texture> & texture_ptr);
+    void Animate();
 protected:
     bool progressing_animation;
 };

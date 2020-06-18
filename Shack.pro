@@ -12,6 +12,7 @@ SOURCES += \
         Map.cpp \
         Monsters.cpp \
         Player.cpp \
+        Robot.cpp \
         Room.cpp \
         Tile.cpp \
         main.cpp
@@ -32,5 +33,6 @@ HEADERS += \
     Map.hpp \
     Monsters.hpp \
     Player.hpp \
+    Robot.hpp \
     Room.hpp \
     Tile.hpp

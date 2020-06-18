@@ -16,6 +16,8 @@ class Entity : public sf::Drawable{
         sf::Vector2f GetScale();
         void Bump(sf::Vector2f position_of_bump);\
         void ResetPath();
+        bool GetMovable();
+        void Animate();
     protected:
         struct Value{
             int current;
@@ -24,7 +26,6 @@ class Entity : public sf::Drawable{
         Value health,mana;
         std::shared_ptr<sf::Texture> entity_texture;
         sf::Sprite entity_sprite;
-
         float speed;
         sf::Vector2f speed_vector;
         float rotation_speed;
@@ -33,6 +34,8 @@ class Entity : public sf::Drawable{
         bool first_move_check;
         bool falling;
         bool monster;
+        bool movable;
+        bool progress_animation;
         float push_factor;
         sf::Clock idle_anim;
         sf::Vector2f desired_position;

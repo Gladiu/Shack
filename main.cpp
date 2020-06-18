@@ -37,7 +37,7 @@ int main(){
     level.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
 
     Monsters enemies;
-    enemies.Generate(level.GetSpawningSpaces());    enemies.Generate(level.GetSpawningSpaces());
+    enemies.Generate(level.GetSpawningSpaces());
 
     stars.UpdateRenderCenter(sf::Vector2f(0.0,0.0));
     stars.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
@@ -91,10 +91,11 @@ int main(){
                 break;
         }
 //checking if someone died
-        level.CheckIfFalling(player);
+        //level.CheckIfFalling(player);
 
-        level.CheckIfFalling(enemies.boomers);
-        std::cout<<1/elapsed.asSeconds()<<std::endl;
+        level.CheckIfFalling(enemies.members);
+        std::cout<<1/elapsed.asSeconds()<<std::endl; //FPS counter
+        //gra trudna dlatego wyłącze spadanie gracza żeby pokazać
 //drawing static elements of the game like hud and background
         game_window.setView(static_view);
         stars.Proces(elapsed);

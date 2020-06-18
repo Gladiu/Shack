@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 #include "Boom.hpp"
+#include "Robot.hpp"
 #include "Player.hpp"
 #include <memory>
 
@@ -15,9 +16,12 @@ class Monsters : public  sf::Drawable{
         void Generate(const std::vector<sf::Vector2f> & legal_positions);
         bool AreClicked(sf::Vector2f position);
         void Interact(Player &player);
-        std::vector<Entity> boomers;
+        std::vector<Entity> members;
     protected:
         sf::Texture boom_texture;
         std::shared_ptr<sf::Texture> boom_texture_ptr;
+        sf::Texture robot_texture;
+        std::shared_ptr<sf::Texture> robot_texture_ptr;
+
 
 };

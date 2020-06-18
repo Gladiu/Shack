@@ -14,7 +14,7 @@ Player::Player(){
     entity_sprite.setTextureRect(sf::IntRect(0,0,16,16));
     texture.generateMipmap();
     entity_sprite.setTexture(this->texture);
-    entity_sprite.setScale(Globals::SCALE/1.5,Globals::SCALE/1.5);
+    entity_sprite.setScale(Globals::SCALE/1.25,Globals::SCALE/1.25);
     texture.setRepeated(true);
     entity_sprite.setOrigin(8.0,10.0);
     health.max=100;

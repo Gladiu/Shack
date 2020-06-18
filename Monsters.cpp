@@ -1,5 +1,4 @@
 #include "Monsters.hpp"
-#include "Player.hpp"
 #include "Globals.hpp"
 #include <iostream>
 
@@ -8,64 +7,82 @@ Monsters::Monsters(){
    this->boom_texture.loadFromFile("textures/boom.png");
    boom_texture.setRepeated(true);
    this->boom_texture_ptr = std::make_shared<sf::Texture>(boom_texture);
+   this->robot_texture.loadFromFile("textures/robot.png");
+   robot_texture.setRepeated(true);
+   this->robot_texture_ptr = std::make_shared<sf::Texture>(robot_texture);
 
 }
 
 void Monsters::Update(sf::Time time,sf::Vector2f render_center, float render_distance){
-    for(unsigned long long i = 0; i <boomers.size(); i++){
-        boomers[i].Update(time);
-        if(boomers[i].IsFalling() && (std::abs(boomers[i].GetScale().x) <= 1 || std::abs(boomers[i].GetScale().y) <= 1)){
-            boomers.erase(boomers.begin()+i);
-        }
-        if(Globals::DISTANCE(boomers[i].GetPosition(),render_center) < render_distance){
-            for(unsigned long long j = 0; j <boomers.size(); j++){
-                if(i != j && boomers[i].GetGlobalBounds().intersects(boomers[j].GetGlobalBounds())){
-                    boomers[i].Bump(boomers[j].GetPosition());
-                    boomers[j].Bump(boomers[i].GetPosition());
+    for(unsigned long long i = 0; i <members.size(); i++){
+        if(Globals::DISTANCE(members[i].GetPosition(),render_center) < render_distance){
+            members[i].Update(time);
+            members[i].Animate();
+            if(members[i].IsFalling() && (std::abs(members[i].GetScale().x) <= 1 || std::abs(members[i].GetScale().y) <= 1)){
+                members.erase(members.begin()+i);
+            }
+
+            for(unsigned long long j = 0; j <members.size(); j++){
+                if(i != j && members[i].GetGlobalBounds().intersects(members[j].GetGlobalBounds())){
+                    members[i].Bump(members[j].GetPosition());
+                    members[j].Bump(members[i].GetPosition());
                 }
             }
         }
-        //it.Animate();
     }
 
 }
 
 void Monsters::draw(sf::RenderTarget &target, sf::RenderStates states) const{
-    for(auto &it:boomers)
+    for(auto &it:members)
         target.draw(it,states);
 }
 
 void Monsters::Generate(const std::vector<sf::Vector2f> & legal_positions){
     Boom andrzej;
     andrzej.SetTexture(boom_texture_ptr);
-    for(auto &it :legal_positions){
+    Robot marek;
+    marek.SetTexture(robot_texture_ptr);
+    int counter =1;
+    for(unsigned long long i =0 ;i<legal_positions.size();i++){
         if(std::rand()%25 == 1){
-            andrzej.SetPosition(it);
-            boomers.emplace_back(andrzej);
+            if(counter <=2){
+                andrzej.SetPosition(legal_positions[i]);
+                members.emplace_back(andrzej);
+                counter++;
+            }
+            else{
+                marek.SetPosition(legal_positions[i]);
+                members.emplace_back(marek);
+                counter =1;
+            }
         }
     }
 }
 
 bool Monsters::AreClicked(sf::Vector2f position){
     bool anwser = false;
-    for(unsigned long long i = 0; i <boomers.size(); i++){
-        if(Globals::DISTANCE(boomers[i].GetPosition(),position)<20*Globals::SCALE){
-            boomers[i].Bump(position);
-        }
+    for(auto & it:members){
+        if( it.GetMovable() && Globals::DISTANCE(it.GetPosition(),position)<20*Globals::SCALE)
+            it.Bump(position);
     }
     return anwser;
 }
 
 
 void Monsters::Interact(Player &player){
-    for(auto &it:boomers){
+    if(!player.IsFalling()){
+        for(auto &it:members){
 
-        if(Globals::DISTANCE(it.GetPosition(),player.GetPosition())< 350)
-            it.SetPath(player.GetPosition());
-        if(it.GetGlobalBounds().intersects(player.GetGlobalBounds())){
-            player.Bump(it.GetPosition());
-            it.Bump(player.GetPosition());
-            //it.ResetPath();
+            if(!it.GetMovable() && Globals::DISTANCE(it.GetPosition(),player.GetPosition())< 350)
+                it.SetPath(player.GetPosition());
+            if(it.GetGlobalBounds().intersects(player.GetGlobalBounds())){
+                if(it.GetMovable())
+                    it.Bump(player.GetPosition());
+                else
+                    player.Bump(it.GetPosition());
+
+            }
         }
     }
 }

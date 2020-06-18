@@ -10,6 +10,8 @@ Entity::Entity(){
     falling =false;
     in_desired_position = true;
     inertial_force = sf::Vector2f(0.0,0.0);
+    idle_anim.restart();
+    progress_animation = true;
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -26,10 +28,8 @@ void Entity::SetPath(const sf::Vector2f &position){
     in_desired_position = false;
     first_move_check = true;
     float temp = Globals::DISTANCE(position,entity_sprite.getPosition());
-    speed_vector.x = std::abs(((position.x-entity_sprite.getPosition().x)/temp)*speed);
-    speed_vector.y = std::abs(((position.y-entity_sprite.getPosition().y)/temp)*speed);
-
-
+    speed_vector.x = ((position.x-entity_sprite.getPosition().x)/temp)*speed;
+    speed_vector.y = ((position.y-entity_sprite.getPosition().y)/temp)*speed;
 }
 
 sf::Vector2f Entity::GetPosition(){
@@ -50,25 +50,10 @@ void Entity::Update(sf::Time time){
     if(!in_desired_position && !falling){
 
         //moving sprite
-
-        if(path.x<entity_sprite.getPosition().x)
-            movement.x -=speed_vector.x*time.asSeconds();
-        if(path.x>entity_sprite.getPosition().x)
-            movement.x +=speed_vector.x*time.asSeconds();
-        if(path.y<entity_sprite.getPosition().y)
-            movement.y -=speed_vector.y*time.asSeconds();
-        if(path.y>entity_sprite.getPosition().y)
-            movement.y +=speed_vector.y*time.asSeconds();
+        movement = speed_vector*time.asSeconds();
 
         //teleport,shaking fix
-        if(std::abs(entity_sprite.getPosition().x-path.x)<.25 || (temp.x > 0 && movement.x<0) || (temp.x < 0 && movement.x > 0)){
-            entity_sprite.setPosition(path.x,entity_sprite.getPosition().y);
-            movement.x = 0;
-        }
-        if(std::abs(entity_sprite.getPosition().y-path.y)<.25 || (temp.y > 0 && movement.y<0) || (temp.y < 0 && movement.y > 0)){
-            entity_sprite.setPosition(entity_sprite.getPosition().x,path.y);
-            movement.y = 0;
-        }
+
 
         //walking animation
         if(entity_sprite.getRotation()+time.asSeconds()*rotation_speed > (max_rotation)
@@ -76,14 +61,14 @@ void Entity::Update(sf::Time time){
             rotation_speed = -rotation_speed;
         //moving eyes in direction of walking
         if(monster){
-            if(temp.x>=0)
+            if(movement.x>=0)
                 entity_sprite.setScale(-std::abs(entity_sprite.getScale().x),entity_sprite.getScale().y);
             else
                 entity_sprite.setScale(std::abs(entity_sprite.getScale().x),entity_sprite.getScale().y);
 
         }
         else{
-            if(temp.x>=0)
+            if(movement.x>=0)
                 entity_sprite.setTextureRect(sf::IntRect(0,16,16,16));
             else
                 entity_sprite.setTextureRect(sf::IntRect(0,0,16,16));
@@ -95,7 +80,7 @@ void Entity::Update(sf::Time time){
 
 
 
-        if(entity_sprite.getPosition().x == path.x  && entity_sprite.getPosition().y == path.y){
+        if(Globals::DISTANCE(entity_sprite.getPosition(),path)<1){
             entity_sprite.setRotation(0.0);
             speed_vector.x = 0;
             speed_vector.y = 0;
@@ -129,7 +114,7 @@ void Entity::Update(sf::Time time){
         //movement.y += inertial_force.y*time.asSeconds();
 
         //hyper speedfix
-        if(std::abs(inertial_force.x) < .25 || (temp_inert.x > 0 && movement.x<0) || (temp_inert.x < 0 && movement.x > 0)){
+        if(std::abs(inertial_force.x) < .25 || (temp_inert.x > 0 && movement.x < 0) || (temp_inert.x < 0 && movement.x > 0)){
             inertial_force.x = 0;
         }
         if(std::abs(inertial_force.y) < .25 || (temp_inert.y > 0 && movement.y<0) || (temp_inert.y < 0 && movement.y > 0)){
@@ -139,15 +124,14 @@ void Entity::Update(sf::Time time){
 
         entity_sprite.move(movement+inertial_force);
 
-        if(first_move_check){
-            temp = movement;
-            first_move_check = false;
-        }
-//        if(!monster){
-//            std::cout<<movement.x<<std::endl;
-//            std::cout<<entity_sprite.getPosition().x<<std::endl<<std::endl;
-//        }
 
+        if(std::abs(entity_sprite.getPosition().x-path.x)<.01 || (temp.x > 0 && movement.x<0) || (temp.x < 0 && movement.x > 0)){
+            speed_vector.x = 0;
+        }
+        if(std::abs(entity_sprite.getPosition().y-path.y)<.01 || (temp.y > 0 && movement.y<0) || (temp.y < 0 && movement.y > 0)){
+            speed_vector.y = 0;
+        }
+        temp = movement;
 }
 
 void Entity::Bump(sf::Vector2f position_of_bump){
@@ -157,9 +141,9 @@ void Entity::Bump(sf::Vector2f position_of_bump){
         inertial_force.x = ((entity_sprite.getPosition().x-position_of_bump.x)/lenght)*push_factor;
         inertial_force.y = ((entity_sprite.getPosition().y-position_of_bump.y)/lenght)*push_factor;
         entity_sprite.setRotation(0.0);
-        in_desired_position = true;
-        first_move_check = true;
-        path = entity_sprite.getPosition();
+//        in_desired_position = true;
+//        first_move_check = true;
+//        path = entity_sprite.getPosition();
         temp_inert = inertial_force;
 }
 
@@ -170,5 +154,27 @@ void Entity::ResetPath(){
 }
 sf::Vector2f Entity::GetScale(){
     return entity_sprite.getScale();
+}
+
+bool Entity::GetMovable(){
+    return movable;
+}
+
+void Entity::Animate(){
+    if(idle_anim.getElapsedTime().asSeconds() >1 && std::rand()%2){
+        idle_anim.restart();
+        sf::IntRect rect = entity_sprite.getTextureRect();
+        if(progress_animation){
+            rect.left += 16.0;
+            if(rect.left == 32.0)
+                progress_animation = false;
+        }
+        else{
+            rect.left -= 16.0;
+            if(rect.left == 0.0)
+                progress_animation = true;
+        }
+        entity_sprite.setTextureRect(rect);
+    }
 }
 
