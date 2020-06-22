@@ -1,5 +1,7 @@
 #pragma once
+#include <SFML/Audio.hpp>
 #include "Entity.hpp"
+
 
 class Robot:public Entity{
 public:
@@ -9,6 +11,7 @@ public:
     void Animate();
 protected:
     bool progressing_animation;
+
 };
 
 

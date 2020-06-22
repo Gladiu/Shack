@@ -80,12 +80,13 @@ void Entity::Update(sf::Time time){
 
 
 
-        if(Globals::DISTANCE(entity_sprite.getPosition(),path)<1){
+        if(Globals::DISTANCE(entity_sprite.getPosition(),path)<5){
             entity_sprite.setRotation(0.0);
             speed_vector.x = 0;
             speed_vector.y = 0;
             in_desired_position = true;
             first_move_check = true;
+            speed_vector = sf::Vector2f(0.0,0.0);
         }
 
     }
@@ -141,9 +142,7 @@ void Entity::Bump(sf::Vector2f position_of_bump){
         inertial_force.x = ((entity_sprite.getPosition().x-position_of_bump.x)/lenght)*push_factor;
         inertial_force.y = ((entity_sprite.getPosition().y-position_of_bump.y)/lenght)*push_factor;
         entity_sprite.setRotation(0.0);
-//        in_desired_position = true;
-//        first_move_check = true;
-//        path = entity_sprite.getPosition();
+        speed_vector = sf::Vector2f(0.0,0.0);
         temp_inert = inertial_force;
 }
 
@@ -161,7 +160,7 @@ bool Entity::GetMovable(){
 }
 
 void Entity::Animate(){
-    if(idle_anim.getElapsedTime().asSeconds() >1 && std::rand()%2){
+    if(idle_anim.getElapsedTime().asSeconds() >.75 && std::rand()%2){
         idle_anim.restart();
         sf::IntRect rect = entity_sprite.getTextureRect();
         if(progress_animation){
@@ -177,4 +176,3 @@ void Entity::Animate(){
         entity_sprite.setTextureRect(rect);
     }
 }
-

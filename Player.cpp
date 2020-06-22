@@ -23,7 +23,8 @@ Player::Player(){
     rotation_speed = 350;
     max_rotation = 25;
     monster = false;
-    push_factor = 1;
+    alive = true;
+    push_factor = 2;
 }
 
 void Player::SpawnIn(Map level){
@@ -42,7 +43,8 @@ void Player::UsedForceAt(sf::Vector2f position){
     }
     entity_sprite.setTextureRect(rect);
     force_cooldown.restart();
-
+    in_desired_position = true;
+    entity_sprite.setRotation(0);
 }
 
 void Player::UpdateAnimation(){
@@ -51,4 +53,11 @@ void Player::UpdateAnimation(){
             rect.left =0;
             entity_sprite.setTextureRect(rect);
     }
+}
+void Player::SetAlive(bool boolean){
+    alive = boolean;
+}
+
+bool Player::GetAlive(){
+    return alive;
 }

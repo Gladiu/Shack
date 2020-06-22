@@ -1,5 +1,6 @@
 #include "Robot.hpp"
 #include "Globals.hpp"
+#include <iostream>
 
 Robot::Robot(){
     speed = 300;
@@ -29,4 +30,3 @@ void Robot::Animate(){
     if(progressing_animation && rec.left<32)
         entity_sprite.setTextureRect(sf::IntRect(rec.left+16,rec.top,16.0,16.0));
 }
-

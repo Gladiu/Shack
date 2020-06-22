@@ -143,6 +143,7 @@ void Map::Generate(){
             LevelTiles.emplace_back(yplace);
         }
     }
+    int debug = 3;
     spawn_space_of_player = Rooms[0].GetTiles()[0].GetPosition();
     for(auto &it: Rooms){
         std::vector room_tiles = it.GetTiles();
@@ -151,7 +152,7 @@ void Map::Generate(){
             y = ((at.GetPosition().y-beginning_of_map.y)/(16*Globals::SCALE));
             if(LevelTiles[x][y].GetEmpty()){
                 LevelTiles[x][y].Generate(floor_texture_ptr);
-                LevelTiles[x][y].setTextureRect(sf::IntRect(std::rand()%4*16,0,16,16));
+                LevelTiles[x][y].setTextureRect(sf::IntRect(0,16*(std::rand()%debug),16,16));
                 LevelTiles[x][y].setPos(at.GetPosition().x,at.GetPosition().y);
             }
         }
@@ -163,7 +164,7 @@ void Map::Generate(){
             y = ((at.GetPosition().y-beginning_of_map.y)/(16*Globals::SCALE));
             if(LevelTiles[x][y].GetEmpty()){
                 LevelTiles[x][y].Generate(floor_texture_ptr);
-                LevelTiles[x][y].setTextureRect(sf::IntRect(std::rand()%4*16,0,16,16));
+                LevelTiles[x][y].setTextureRect(sf::IntRect(0,16*(std::rand()%debug),16,16));
                 LevelTiles[x][y].setPos(at.GetPosition().x,at.GetPosition().y);
             }
         }
@@ -179,6 +180,68 @@ void Map::Generate(){
         }
         j=0;
         i++;
+    }
+    for(auto &it:TilePos){
+        std::vector<bool> filled;
+        for(int j = -1;j <2; j++){
+            for(int i = -1;i <2; i++){
+                if(i+it.x >=0 && i+it.x <LevelTiles.size() && j+it.y >=0 && j+it.y <LevelTiles[0].size()){
+                    filled.emplace_back(LevelTiles[i+it.x][j+it.y].GetEmpty());
+                }
+                else
+                    filled.emplace_back(true);
+            }
+        }
+        //pionowy tunel
+        if(!filled[1] && filled[3] && filled[5] && !filled[7])
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(32,16*(std::rand()%debug),16,16));
+        //poziomy tunel
+        if(filled[1] && !filled[3] && !filled[5] && filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(32,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(90);
+        }
+
+        //szczota na lewo
+        if(!filled[1]  && filled[3] && !filled[5] && !filled[7] ){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(48,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(180);
+        }
+        //szczota na prawo
+        if(!filled[1] && !filled[3] && filled[5] && !filled[7])
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(48,16*(std::rand()%debug),16,16));
+        //szczota u góry
+        if( filled[1] && !filled[3] && !filled[5] && !filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(48,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(-90);
+        }
+
+        //szczora na dole
+        if(!filled[1]  && !filled[3] && !filled[5] && filled[7] ){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(48,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(90);
+        }
+
+        //prawy dolny róg
+        if(!filled[1] &&  !filled[3] && filled[5]  && filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(16,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(90);
+        }
+        //lewy dolny róg
+        if(!filled[1] &&  filled[3] && !filled[5]  && filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(16,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(180);
+        }
+        //prawy górny róg
+        if(filled[1] &&  !filled[3] && filled[5]  && !filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(16,16*(std::rand()%debug),16,16));
+        }
+        //lewy górny róg
+        if(filled[1] &&  filled[3] && !filled[5]  && !filled[7]){
+            LevelTiles[it.x][it.y].setTextureRect(sf::IntRect(16,16*(std::rand()%debug),16,16));
+            LevelTiles[it.x][it.y].SetRotation(-90);
+        }
+
+        //if(filled[0] && filled[1] && filled[2] && filled[3] && filled[4] && filled[5] && filled[6] && filled[7] && filled[8]) */
     }
 
 

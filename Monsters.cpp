@@ -10,7 +10,17 @@ Monsters::Monsters(){
    this->robot_texture.loadFromFile("textures/robot.png");
    robot_texture.setRepeated(true);
    this->robot_texture_ptr = std::make_shared<sf::Texture>(robot_texture);
+   robot_hit_bfr.loadFromFile("sounds/robot_hit.wav");
+   //boom_hit_bfr.loadFromFile("sounds/boom")
+   robot_hit.setBuffer(robot_hit_bfr);
 
+   boom_death_snd_bfr.loadFromFile("sounds/boom_falling.wav");
+   boom_death.setBuffer(boom_death_snd_bfr);
+   robot_death_snd_bfr.loadFromFile("sounds/robot_falling.wav");
+   robot_death.setBuffer(robot_death_snd_bfr);
+
+
+   robot_hit_sound_cooldown.restart();
 }
 
 void Monsters::Update(sf::Time time,sf::Vector2f render_center, float render_distance){
@@ -19,13 +29,19 @@ void Monsters::Update(sf::Time time,sf::Vector2f render_center, float render_dis
             members[i].Update(time);
             members[i].Animate();
             if(members[i].IsFalling() && (std::abs(members[i].GetScale().x) <= 1 || std::abs(members[i].GetScale().y) <= 1)){
+                if(members[i].GetMovable())
+                    robot_death.play();
+                else
+                    boom_death.play();
                 members.erase(members.begin()+i);
             }
 
             for(unsigned long long j = 0; j <members.size(); j++){
-                if(i != j && members[i].GetGlobalBounds().intersects(members[j].GetGlobalBounds())){
+                if(i != j && members[i].GetGlobalBounds().intersects(members[j].GetGlobalBounds()) && robot_hit_sound_cooldown.getElapsedTime().asSeconds()>.1){
                     members[i].Bump(members[j].GetPosition());
                     members[j].Bump(members[i].GetPosition());
+                    robot_hit.play();
+                    robot_hit_sound_cooldown.restart();
                 }
             }
         }
@@ -47,13 +63,14 @@ void Monsters::Generate(const std::vector<sf::Vector2f> & legal_positions){
     for(unsigned long long i =0 ;i<legal_positions.size();i++){
         if(std::rand()%25 == 1){
             if(counter <=2){
-                andrzej.SetPosition(legal_positions[i]);
-                members.emplace_back(andrzej);
+                marek.SetPosition(legal_positions[i]);
+                members.emplace_back(marek);
+
                 counter++;
             }
             else{
-                marek.SetPosition(legal_positions[i]);
-                members.emplace_back(marek);
+                andrzej.SetPosition(legal_positions[i]);
+                members.emplace_back(andrzej);
                 counter =1;
             }
         }
@@ -63,8 +80,13 @@ void Monsters::Generate(const std::vector<sf::Vector2f> & legal_positions){
 bool Monsters::AreClicked(sf::Vector2f position){
     bool anwser = false;
     for(auto & it:members){
-        if( it.GetMovable() && Globals::DISTANCE(it.GetPosition(),position)<20*Globals::SCALE)
+        if( it.GetMovable() && Globals::DISTANCE(it.GetPosition(),position)<20*Globals::SCALE){
             it.Bump(position);
+            if(robot_hit_sound_cooldown.getElapsedTime().asSeconds()>.25){
+                robot_hit.play();
+                robot_hit_sound_cooldown.restart();
+            }
+        }
     }
     return anwser;
 }

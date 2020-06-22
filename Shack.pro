@@ -6,10 +6,12 @@ CONFIG -= qt
 SOURCES += \
         Background.cpp \
         Boom.cpp \
+        Button.cpp \
         Corridor.cpp \
         Entity.cpp \
         Globals.cpp \
         Map.cpp \
+        Menu.cpp \
         Monsters.cpp \
         Player.cpp \
         Robot.cpp \
@@ -27,10 +29,12 @@ CONFIG(debug, debug|release){
 HEADERS += \
     Background.hpp \
     Boom.hpp \
+    Button.hpp \
     Corridor.hpp \
     Entity.hpp \
     Globals.hpp \
     Map.hpp \
+    Menu.hpp \
     Monsters.hpp \
     Player.hpp \
     Robot.hpp \

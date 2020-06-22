@@ -4,12 +4,13 @@
 
 Boom::Boom(){
     speed = 300;
-    rotation_speed = 160;
+    rotation_speed = 200;
     max_rotation = 25;
     monster = true;
     progressing_animation = true;
     movable = false;
     push_factor = 1;
+
 }
 
 void Boom::SetPosition(sf::Vector2f position){
@@ -23,5 +24,4 @@ void Boom::SetTexture(const std::shared_ptr<sf::Texture> &texture_ptr){
     entity_sprite.setScale(Globals::SCALE,Globals::SCALE);
     entity_sprite.setOrigin(8.0,8.0);
 }
-
 

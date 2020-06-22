@@ -2,6 +2,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Entity.hpp"
 #include "Boom.hpp"
 #include "Robot.hpp"
@@ -22,6 +23,16 @@ class Monsters : public  sf::Drawable{
         std::shared_ptr<sf::Texture> boom_texture_ptr;
         sf::Texture robot_texture;
         std::shared_ptr<sf::Texture> robot_texture_ptr;
+        sf::SoundBuffer robot_hit_bfr;
+        sf::Sound robot_hit;
+        sf::SoundBuffer boom_hit_bfr;
+        sf::Sound boom_hit;
+        sf::Clock robot_hit_sound_cooldown;
+        sf::SoundBuffer boom_death_snd_bfr;
+        sf::SoundBuffer robot_death_snd_bfr;
+        sf::Sound boom_death;
+        sf::Sound robot_death;
+
 
 
 };

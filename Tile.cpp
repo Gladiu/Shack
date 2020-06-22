@@ -71,3 +71,16 @@ sf::Color Tile::getColor(){
 void Tile::SetColor(sf::Color kolor){
     sprite.setColor(kolor);
 }
+
+void Tile::SetRotation(int rotation){
+    sprite.setRotation(rotation);
+
+
+    if(rotation == 90)
+        sprite.setPosition(sprite.getPosition().x+16*Globals::SCALE,sprite.getPosition().y);
+    if(rotation == -90)
+        sprite.setPosition(sprite.getPosition().x,sprite.getPosition().y+16*Globals::SCALE);
+    if(rotation == 180)
+        sprite.setPosition(sprite.getPosition().x+16*Globals::SCALE,sprite.getPosition().y+16*Globals::SCALE);
+
+}

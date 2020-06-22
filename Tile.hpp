@@ -19,6 +19,7 @@ class Tile : public sf::Drawable{
         void setTextureRect(const sf::IntRect &rect);
         sf::Color getColor();
         void SetColor(sf::Color kolor);
+        void SetRotation(int rotation);
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
 

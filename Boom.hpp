@@ -1,7 +1,9 @@
 #pragma once
 #include "Entity.hpp"
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <memory>
+
 
 class Boom : public Entity{
 public:
