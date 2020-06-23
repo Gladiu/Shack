@@ -12,6 +12,8 @@ Entity::Entity(){
     inertial_force = sf::Vector2f(0.0,0.0);
     idle_anim.restart();
     progress_animation = true;
+    snd_bfr.loadFromFile("sounds/step.wav");
+    snd.setBuffer(snd_bfr);
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -57,8 +59,11 @@ void Entity::Update(sf::Time time){
 
         //walking animation
         if(entity_sprite.getRotation()+time.asSeconds()*rotation_speed > (max_rotation)
-                && entity_sprite.getRotation()+time.asSeconds()*rotation_speed <(360-max_rotation))
+                && entity_sprite.getRotation()+time.asSeconds()*rotation_speed <(360-max_rotation)){
             rotation_speed = -rotation_speed;
+            snd.play();
+
+        }
         //moving eyes in direction of walking
         if(monster){
             if(movement.x>=0)

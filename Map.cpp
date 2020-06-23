@@ -14,6 +14,9 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 Map::Map(){
     std::cout<<"Loading Map assets..."<<std::endl;
@@ -21,6 +24,7 @@ Map::Map(){
     this->floor_texture.setRepeated(true);
     floor_texture_ptr = std::make_shared<sf::Texture>(floor_texture);
     ammount_of_rooms = 200; //bigger means less fps
+    debug =3;
 }
 
 void Map::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -143,7 +147,6 @@ void Map::Generate(){
             LevelTiles.emplace_back(yplace);
         }
     }
-    int debug = 3;
     spawn_space_of_player = Rooms[0].GetTiles()[0].GetPosition();
     for(auto &it: Rooms){
         std::vector room_tiles = it.GetTiles();
@@ -181,6 +184,14 @@ void Map::Generate(){
         j=0;
         i++;
     }
+
+this->Beutify();
+
+
+}
+
+void Map::Beutify(){
+    int debug = 3;
     for(auto &it:TilePos){
         std::vector<bool> filled;
         for(int j = -1;j <2; j++){
@@ -243,12 +254,10 @@ void Map::Generate(){
 
         //if(filled[0] && filled[1] && filled[2] && filled[3] && filled[4] && filled[5] && filled[6] && filled[7] && filled[8]) */
     }
-
-
 }
 
 sf::Vector2f Map::Get_Spawn(){
-    return spawn_space_of_player;
+    return LevelTiles[TilePos[0].x][TilePos[0].y].GetPosition();
 }
 void Map::CheckIfFalling(Entity &smth){
     sf::FloatRect rect = smth.GetGlobalBounds();
@@ -284,10 +293,65 @@ void Map::SetRenderDistance(float distance){
 std::vector<sf::Vector2f> Map::GetSpawningSpaces(){
     std::vector<sf::Vector2f> anwser;
     for(auto &it:TilePos){
-        if(Globals::DISTANCE(LevelTiles[it.x][it.y].GetPosition(),render_center)>render_distance)
+        //if(Globals::DISTANCE(LevelTiles[it.x][it.y].GetPosition(),render_center)>render_distance)
             anwser.emplace_back(LevelTiles[it.x][it.y].GetPosition());
     }
     return anwser;
 }
 
+void Map::GenerateFromFile(std::string path){
+    beginning_of_map = sf::Vector2f(0.0,0.0);
+    std::string line;
+    {
+        std::fstream file(path,std::ios::in);
 
+        Tile temp;
+        std::vector<Tile> yplace;
+
+        while (std::getline(file, line)) {
+            yplace.emplace_back(temp);
+        }
+
+        for(auto it:line){
+            LevelTiles.emplace_back(yplace);
+        }
+
+
+    }
+    line.clear();
+    int x=0;
+    int y=0;
+    std::fstream file(path,std::ios::in);
+    while (std::getline(file, line)) {
+
+        for(auto it:line){
+            //std::cout<<it<std::endl;
+            if(it=='X'){
+                LevelTiles[x][y].Generate(floor_texture_ptr);
+                LevelTiles[x][y].setTextureRect(sf::IntRect(0,16*(std::rand()%debug),16,16));
+                LevelTiles[x][y].setPos(x*16*Globals::SCALE,y*16*Globals::SCALE);
+            }
+            else{
+                //LevelTiles[x][y].
+            }
+            x++;
+        }
+        x=0;
+        y++;
+    }
+    int i =0;
+    int j =0;
+    for(auto &it:LevelTiles ){
+
+        for(auto &at:it){
+            if(!at.GetEmpty())
+                TilePos.emplace_back(sf::Vector2f(i,j));
+            j++;
+        }
+        j=0;
+        i++;
+    }
+
+    file.close();
+    //this->Beutify();
+}

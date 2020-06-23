@@ -24,7 +24,8 @@ Player::Player(){
     max_rotation = 25;
     monster = false;
     alive = true;
-    push_factor = 2;
+    push_factor = 3;
+    snd.setVolume(50);
 }
 
 void Player::SpawnIn(Map level){

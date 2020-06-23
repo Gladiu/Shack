@@ -9,7 +9,7 @@ Robot::Robot(){
     monster = true;
     progressing_animation = true;
     movable = true;
-    push_factor = 2;
+    push_factor = 3;
 }
 
 void Robot::SetPosition(sf::Vector2f position){

@@ -45,8 +45,8 @@ class Entity : public sf::Drawable{
         sf::Vector2f path;
         sf::Vector2f inertial_force;
         sf::Texture texture;
-    private:
-
+        sf::SoundBuffer snd_bfr;
+        sf::Sound snd;
 };
 
 

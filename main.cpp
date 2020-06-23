@@ -14,25 +14,29 @@
 
 int main(){
     srand(time(NULL));
-    sf::RenderWindow game_window(sf::VideoMode(1200,860),"Shack Beta");
+    sf::RenderWindow game_window(sf::VideoMode(1200,900),"Shack Pre-Release 2");
+    sf::Font score_font;
+    score_font.loadFromFile("textures/font.TTF");
     bool quit = false;
+    int enemies_left;
+    int n_of_last_level =1;
     while(game_window.isOpen()){
         {
         Menu mainmenu;
         //declaring starting states and objects
         sf::Vector2f mouse_position;
         bool left_mbtn_is_hold = false;
-        //game_window.setFramerateLimit(120);
+        game_window.setFramerateLimit(120);
         sf::View game_view(sf::Vector2f(0.0,0.0),static_cast<sf::Vector2f>(game_window.getSize()));
         sf::View static_view = game_view;
         Map level;
         Background stars;
         Player player;
-        player.SpawnIn(level);
         sf::Clock clock;
         sf::Time elapsed;
         Monsters enemies;
-
+        sf::Text score;
+        score.setFont(score_font);
         sf::Music music,ambient;
         music.openFromFile("sounds/soundtrack.wav");
         ambient.openFromFile("sounds/ambient.wav");
@@ -91,11 +95,21 @@ int main(){
 
     }
         if(game_window.isOpen()){
-            level.Generate();
+            if(Globals::FILEEXISTS("levels/"+std::to_string(n_of_last_level)+".txt")){
+                level.GenerateFromFile("levels/"+std::to_string(n_of_last_level)+".txt");
+                n_of_last_level++;
+            }
+            else
+                level.Generate();
+            player.SpawnIn(level);
             //setting render distance and render point
             level.UpdateRenderCenter(player.GetPosition());
             level.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
             enemies.Generate(level.GetSpawningSpaces());
+            enemies_left = enemies.GetSize();
+            score.setFillColor(sf::Color(230,178,23,255));
+            score.setCharacterSize(30);
+            score.setPosition(static_view.getSize().x/4-50,-static_view.getSize().y/4-50);
             stars.SetRenderDistance(Globals::DISTANCE(game_window.getView().getSize(),sf::Vector2f(0.0,0.0)));
             music.setVolume(25);
 
@@ -103,10 +117,11 @@ int main(){
         music.stop();
         ambient.play();
         //game loop
-        while(game_window.isOpen() && player.GetAlive()){
+        while(game_window.isOpen() && player.GetAlive()){// && enemies_left != 0){
             game_window.clear();
             sf::Event user_event;
             //updating clocks
+            score.setString("OBJECTIVE "+std::to_string(enemies_left));
             elapsed = clock.restart();
             while(game_window.pollEvent(user_event) || left_mbtn_is_hold){
 
@@ -125,6 +140,7 @@ int main(){
                     static_view.setSize(user_event.size.width, user_event.size.height);
                     level.SetRenderDistance(Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
                     stars.SetRenderDistance(Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
+                    score.setPosition(static_view.getSize().x/4-50,-static_view.getSize().y/4-50);
                 }
                 if (left_mbtn_is_hold || sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {
@@ -168,7 +184,7 @@ int main(){
             player.UpdateAnimation();
             level.UpdateRenderCenter(player.GetPosition());
             enemies.Interact(player);
-            enemies.Update(elapsed,player.GetPosition(),Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
+            enemies_left = enemies.Update(elapsed,player.GetPosition(),Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
 
 
             //centering view on character
@@ -182,12 +198,16 @@ int main(){
             game_window.draw(level);
             game_window.draw(enemies);
             game_window.draw(player);
+            game_window.setView(static_view);
+            game_window.draw(score);
+            game_window.setView(game_view);
             game_window.display();
 
 
         }
         }
-        quit = false;
+        if(enemies_left != 0)
+            quit = false;
     }
 
     return 0;

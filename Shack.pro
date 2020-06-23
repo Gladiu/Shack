@@ -1,5 +1,8 @@
 TEMPLATE = app
-CONFIG += console c++17
+CONFIG += c++17
+CONFIG += console
+CONFIG += static
+CONFIG += staticlib
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -20,8 +23,8 @@ SOURCES += \
         main.cpp
 INCLUDEPATH += "C:\Program Files (x86)\SFML-2.5.1\include"
 LIBS += -L"C:\Program Files (x86)\SFML-2.5.1\lib"
-CONFIG(debug, debug|release){
-    LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-system-d -lsfml-window-d
+CONFIG(debug, release){
+    LIBS += -lsfml-audio-s -lsfml-graphics-s -lsfml-network-s -lsfml-system-s -lsfml-window-s
 } else {
     LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-system -lsfml-window
 }

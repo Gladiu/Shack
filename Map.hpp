@@ -17,6 +17,8 @@ class Map : public sf::Drawable{
         void UpdateRenderCenter(sf::Vector2f position);
         void SetRenderDistance(float distance);
         std::vector<sf::Vector2f> GetSpawningSpaces();
+        void Beutify();
+        void GenerateFromFile(std::string path);
     protected:
         int ammount_of_rooms;
         std::vector<std::vector<Tile>> LevelTiles;
@@ -28,6 +30,7 @@ class Map : public sf::Drawable{
         sf::Vector2f size,spawn_space_of_player,beginning_of_map;
         sf::Vector2f render_center;
         float render_distance;
+        int debug;
 };
 
 
