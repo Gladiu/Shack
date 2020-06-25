@@ -185,6 +185,7 @@ int main(){
                 player.UpdateAnimation();
                 level.UpdateRenderCenter(player.GetPosition());
                 enemies.Interact(player);
+                enemies.CheckIfDead();
                 enemies_left = enemies.Update(elapsed,player.GetPosition(),Globals::DISTANCE(game_view.getSize(),sf::Vector2f(0.0,0.0)));
 
 

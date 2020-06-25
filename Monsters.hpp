@@ -19,6 +19,7 @@ class Monsters : public  sf::Drawable{
         bool AreClicked(sf::Vector2f position);
         void Interact(Player &player);
         int GetSize();
+        void CheckIfDead();
         std::vector<Entity> members;
     protected:
         sf::Texture boom_texture;

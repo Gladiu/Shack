@@ -12,7 +12,7 @@ Entity::Entity(){
     inertial_force = sf::Vector2f(0.0,0.0);
     idle_anim.restart();
     progress_animation = true;
-
+    alive = true;
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -39,6 +39,8 @@ sf::Vector2f Entity::GetPosition(){
 
 void Entity::IsFalling(bool outsidemap){
     falling = outsidemap;
+    if(!falling)
+        death_counter.restart();
 }
 bool Entity::IsFalling(){
     return falling;
@@ -96,13 +98,18 @@ void Entity::Update(sf::Time time){
     }
     if(falling){
         entity_sprite.setRotation(0.0);
-
         movement.x = 0;
         movement.y = 0;
         inertial_force.x =0;
         inertial_force.y =0;
         if(entity_sprite.getScale().x >=0 || entity_sprite.getScale().y >=0 )
             entity_sprite.setScale(std::abs(entity_sprite.getScale().x-10*time.asSeconds()),std::abs(entity_sprite.getScale().x-10*time.asSeconds()));
+        if(death_counter.getElapsedTime().asSeconds()>.1 && (entity_sprite.getScale().x <=0.1 || entity_sprite.getScale().y <=0.1)){
+            this->SetAlive(false);
+
+
+        }
+        std::cout<<entity_sprite.getScale().x<<std::endl;
     }
     if(inertial_force.x !=0 || inertial_force.y != 0){
 
@@ -179,4 +186,11 @@ void Entity::Animate(){
         }
         entity_sprite.setTextureRect(rect);
     }
+}
+void Entity::SetAlive(bool boolean){
+    alive = boolean;
+}
+
+const bool &Entity::GetAlive()const{
+    return alive;
 }

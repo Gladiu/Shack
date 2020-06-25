@@ -9,8 +9,6 @@ class Player : public Entity {
         void SpawnIn(Map level);
         void UsedForceAt(sf::Vector2f position);
         void UpdateAnimation();
-        bool GetAlive();
-        void SetAlive(bool boolean);
     protected:
         sf::Clock force_cooldown;
         bool alive;

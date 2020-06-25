@@ -19,11 +19,14 @@ class Entity : public sf::Drawable{
         void ResetPath();
         const bool &GetMovable()const;
         void Animate();
+        const bool &GetAlive()const;
+        void SetAlive(bool boolean);
     protected:
         struct Value{
             int current;
             int max;
         };
+        bool alive;
         Value health,mana;
         std::shared_ptr<sf::Texture> entity_texture;
         sf::Sprite entity_sprite;
@@ -39,6 +42,7 @@ class Entity : public sf::Drawable{
         bool progress_animation;
         float push_factor;
         sf::Clock idle_anim;
+        sf::Clock death_counter;
         sf::Vector2f desired_position;
         sf::Vector2f temp;
         sf::Vector2f temp_inert;

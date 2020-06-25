@@ -23,7 +23,6 @@ Player::Player(){
     rotation_speed = 350;
     max_rotation = 25;
     monster = false;
-    alive = true;
     push_factor = 3;
     snd_bfr.loadFromFile("sounds/step.wav");
     snd.setBuffer(snd_bfr);
@@ -62,10 +61,4 @@ void Player::UpdateAnimation(){
         this->SetAlive(false);
     }
 }
-void Player::SetAlive(bool boolean){
-    alive = boolean;
-}
 
-bool Player::GetAlive(){
-    return alive;
-}
