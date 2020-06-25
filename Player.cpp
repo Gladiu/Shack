@@ -25,7 +25,10 @@ Player::Player(){
     monster = false;
     alive = true;
     push_factor = 3;
+    snd_bfr.loadFromFile("sounds/step.wav");
+    snd.setBuffer(snd_bfr);
     snd.setVolume(50);
+
 }
 
 void Player::SpawnIn(Map level){
@@ -53,6 +56,10 @@ void Player::UpdateAnimation(){
             sf::IntRect rect = entity_sprite.getTextureRect();
             rect.left =0;
             entity_sprite.setTextureRect(rect);
+    }
+
+    if(entity_sprite.getScale().x < 0.1 || entity_sprite.getScale().y < 0.1){
+        this->SetAlive(false);
     }
 }
 void Player::SetAlive(bool boolean){

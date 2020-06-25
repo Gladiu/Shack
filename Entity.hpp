@@ -9,7 +9,7 @@ class Entity : public sf::Drawable{
         Entity();
         void Update(sf::Time time);
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
-        sf::FloatRect GetGlobalBounds();
+        const sf::FloatRect GetGlobalBounds()const;
         void SetPath(const sf::Vector2f &position);
         sf::Vector2f GetPosition();
         void IsFalling(bool outsidemap);
@@ -17,7 +17,7 @@ class Entity : public sf::Drawable{
         sf::Vector2f GetScale();
         void Bump(sf::Vector2f position_of_bump);\
         void ResetPath();
-        bool GetMovable();
+        const bool &GetMovable()const;
         void Animate();
     protected:
         struct Value{

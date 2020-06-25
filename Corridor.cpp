@@ -79,7 +79,7 @@ bool Corridor::WillCollide(int direction, int lenght,const sf::Vector2f position
     return colliding;
 }
 
-sf::Vector2f Corridor::Get_Top_Left_Corner(){
+const sf::Vector2f Corridor::Get_Top_Left_Corner() const{
     sf::Vector2f buffer = Tiles[0].GetPosition();
     for(auto &it:Tiles){
         if( buffer.x > it.GetPosition().x || buffer.y > it.GetPosition().y )
@@ -88,6 +88,6 @@ sf::Vector2f Corridor::Get_Top_Left_Corner(){
     return buffer;
 }
 
-std::vector<Tile> Corridor::GetTiles(){
+const std::vector<Tile> &Corridor::GetTiles() const{
     return Tiles;
 }

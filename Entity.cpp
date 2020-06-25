@@ -12,8 +12,7 @@ Entity::Entity(){
     inertial_force = sf::Vector2f(0.0,0.0);
     idle_anim.restart();
     progress_animation = true;
-    snd_bfr.loadFromFile("sounds/step.wav");
-    snd.setBuffer(snd_bfr);
+
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
@@ -21,7 +20,7 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states)const{
 }
 
 
-sf::FloatRect Entity::GetGlobalBounds(){
+const sf::FloatRect Entity::GetGlobalBounds() const{
     return entity_sprite.getGlobalBounds();
 }
 
@@ -160,7 +159,7 @@ sf::Vector2f Entity::GetScale(){
     return entity_sprite.getScale();
 }
 
-bool Entity::GetMovable(){
+const bool &Entity::GetMovable()const {
     return movable;
 }
 

@@ -10,8 +10,8 @@ class Corridor : public sf::Drawable{
         void GenerateCorridor(sf::Vector2f departurepos,sf::Vector2f finalpos);
         void SetNextLevelTrigger(bool trigger);
         bool WillCollide(int direction, int lenght,const sf::Vector2f position);
-        sf::Vector2f Get_Top_Left_Corner();
-        std::vector<Tile> GetTiles();
+        const sf::Vector2f Get_Top_Left_Corner()const;
+        const std::vector<Tile> & GetTiles()const;
     protected:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states)const;
     private:

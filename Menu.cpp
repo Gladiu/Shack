@@ -40,19 +40,16 @@ void Menu::Interact(sf::Vector2f mouse_pos,bool left_btn_click){
         accept.play();
     }
 }
-void Menu::Update(sf::Time elapsed){
-
-}
 void Menu::draw(sf::RenderTarget &target, sf::RenderStates states) const {
         target.draw(playbutton,states);
         target.draw(exitbutton,states);
         target.draw(title,states);
 }
 
-bool Menu::GetContinueGame(){
+const bool &Menu::GetContinueGame()const{
     return continue_game;
 }
 
-bool Menu::GetExitGame(){
+const bool &Menu::GetExitGame() const{
     return exit_game;
 }

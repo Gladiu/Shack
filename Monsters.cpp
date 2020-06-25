@@ -26,19 +26,17 @@ Monsters::Monsters(){
 
    robot_hit_sound_cooldown.restart();
 }
+Monsters::~Monsters(){
+    members.clear();
+
+}
 
 int Monsters::Update(sf::Time time,sf::Vector2f render_center, float render_distance){
     for(unsigned long long i = 0; i <members.size(); i++){
         if(Globals::DISTANCE(members[i].GetPosition(),render_center) < render_distance){
             members[i].Update(time);
             members[i].Animate();
-            if(members[i].IsFalling() && (std::abs(members[i].GetScale().x) <= 1 || std::abs(members[i].GetScale().y) <= 1)){
-                if(members[i].GetMovable())
-                    robot_death.play();
-                else
-                    boom_death.play();
-                members.erase(members.begin()+i);
-            }
+
 
             for(unsigned long long j = 0; j <members.size(); j++){
                 if(i != j && members[i].GetGlobalBounds().intersects(members[j].GetGlobalBounds()) && robot_hit_sound_cooldown.getElapsedTime().asSeconds()>.2){
@@ -50,6 +48,15 @@ int Monsters::Update(sf::Time time,sf::Vector2f render_center, float render_dist
                         boom_hit.play();
                     robot_hit_sound_cooldown.restart();
                 }
+            }
+            if(members[i].IsFalling() && (std::abs(members[i].GetScale().x) <= .5 || std::abs(members[i].GetScale().y) <= .5)){
+                if(members[i].GetMovable()){
+                    robot_death.play();
+                    std::cout<<"a";
+                }
+                if(!members[i].GetMovable())
+                    boom_death.play();
+                members.erase(members.begin()+i);
             }
         }
     }
@@ -67,6 +74,7 @@ void Monsters::Generate(const std::vector<sf::Vector2f> & legal_positions){
     Robot marek;
     marek.SetTexture(robot_texture_ptr);
     int counter =1;
+    members.clear();
     for(unsigned long long i =0 ;i<legal_positions.size();i++){
         if(std::rand()%25 == 1){
             if(counter <=2){
@@ -82,6 +90,9 @@ void Monsters::Generate(const std::vector<sf::Vector2f> & legal_positions){
             }
         }
     }
+    marek.SetPosition(legal_positions[legal_positions.size()-1]);
+    members.emplace_back(marek);
+
 }
 
 bool Monsters::AreClicked(sf::Vector2f position){

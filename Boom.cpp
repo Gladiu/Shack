@@ -9,7 +9,7 @@ Boom::Boom(){
     monster = true;
     progressing_animation = true;
     movable = false;
-    push_factor = 3;
+    push_factor = 4;
     snd_bfr.loadFromFile("sounds/step.wav");
     snd.setBuffer(snd_bfr);
 

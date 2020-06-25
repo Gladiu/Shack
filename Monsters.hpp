@@ -13,6 +13,7 @@ class Monsters : public  sf::Drawable{
     public:
         void draw(sf::RenderTarget &target, sf::RenderStates states) const;
         Monsters();
+        ~Monsters();
         int Update(sf::Time time,sf::Vector2f render_center, float render_distance);
         void Generate(const std::vector<sf::Vector2f> & legal_positions);
         bool AreClicked(sf::Vector2f position);

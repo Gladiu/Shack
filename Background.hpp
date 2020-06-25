@@ -11,7 +11,7 @@ class Background : public sf::Drawable{
         void Proces(sf::Time time);
         void UpdateRenderCenter(sf::Vector2f position);
         void SetRenderDistance(float distance);
-    protected:
+    private:
         std::vector<Tile> bck_tiles;
         std::vector<Tile> background_for_tiles;
         std::vector<std::pair<int,bool>> glowing_tiles; //this bool is defining if we are darkening a tile

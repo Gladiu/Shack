@@ -9,9 +9,8 @@ class Menu : public sf::Drawable{
 public:
     Menu();
     void Interact(sf::Vector2f mouse_pos,bool left_btn_click);
-    void Update(sf::Time elapsed);
-    bool GetContinueGame();
-    bool GetExitGame();
+    const bool & GetContinueGame()const;
+    const bool & GetExitGame() const;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 protected:
     bool continue_game;
